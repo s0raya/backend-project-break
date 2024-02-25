@@ -4,15 +4,15 @@ const Product = require('../models/Product.js');
 
 const getNavBar = (path, category) => {
     let html = '';
-    if(path === '/dashboard') {
+    if(path === '/dashboard' || path === '/dashboard/') {
         html = `
             <nav class="navbar">
                 <a href="/dashboard">Productos</a>
-                <a href="${path}/?category=Camisetas">Camisetas</a>
-                <a href="${path}/?category=Pantalones">Pantalones</a>
-                <a href="${path}/?category=Zapatos">Zapatos</a>
-                <a href="${path}/?category=Accesorios">Accesorios</a>
-                <a href="${path}/dashboard/new">Nuevo Producto</a>
+                <a href="/dashboard/?category=Camisetas">Camisetas</a>
+                <a href="/dashboard/?category=Pantalones">Pantalones</a>
+                <a href="/dashboard/?category=Zapatos">Zapatos</a>
+                <a href="/dashboard/?category=Accesorios">Accesorios</a>
+                <a href="/dashboard/new">Nuevo Producto</a>
                 <a href="">Logout</a>   
             </nav>
         `
@@ -20,10 +20,10 @@ const getNavBar = (path, category) => {
         html = `
             <nav class="navbar">
             <a href="/products">Productos</a>
-            <a href="${path}/?category=Camisetas">Camisetas</a>
-            <a href="${path}/?category=Pantalones">Pantalones</a>
-            <a href="${path}/?category=Zapatos">Zapatos</a>
-            <a href="${path}/?category=Accesorios">Accesorios</a>
+            <a href="/products/?category=Camisetas">Camisetas</a>
+            <a href="/products/?category=Pantalones">Pantalones</a>
+            <a href="/products/?category=Zapatos">Zapatos</a>
+            <a href="/products/?category=Accesorios">Accesorios</a>
             <a href="">Login</a>   
         </nav>  
         `
@@ -35,8 +35,9 @@ const getProducts = (path, products) => {
     let html = '';
     for(let product of products) {
         html += `
+            <h2 class="title">Productos</h2>
             <div class="product-card">
-                <h2>${product.name}</h2>
+                <h3>${product.name}</h3>
                 <img src="${product.image}" alt="${product.name}">
                 <p>${product.description}</p>
                 <p>${product.price}€</p>
@@ -56,10 +57,10 @@ const getProduct = (path, product) => {
                 <img src="${product.image}" alt="${product.name}">
                 <p>${product.description}</p>
                 <p>${product.price}€</p>
-                <p>Categoria: ${product.category}€</p>
-                <p>${product.size}€</p>
+                <p>Categoria: ${product.category}</p>
+                <p>Talla: ${product.size}</p>
                 <button><a href="">Editar</a></button>
-                <button><a href="">Borrar</a></button>
+                <button><a href="${path}/${product._id}/delete">Borrar</a></button>
             </div>
         `
     } else {
@@ -69,8 +70,8 @@ const getProduct = (path, product) => {
                 <img src="${product.image}" alt="${product.name}">
                 <p>${product.description}</p>
                 <p>${product.price}€</p>
-                <p>Categoria: ${product.category}€</p>
-                <p>${product.size}€</p>
+                <p>Categoria: ${product.category}</p>
+                <p>Talla: ${product.size}</p>
             </div>
         `
     }
@@ -101,23 +102,6 @@ router.get('/products/:productId', async (req,res) => {
     }
 });
 
-router.get('/dashboard/:productId', async (req,res) => {
-    try {
-        const path = req.path.includes('dashboard') ? '/dashboard' : '';
-        const product = await Product.findById(req.params.productId);
-        res.send(getNavBar(path) + getProduct(path, product));
-    } catch (error) {
-        console.log(error);
-    }
-});
-
-router.get('/dashboard/new', (req,res) => {
-    res.send(`
-        <h2>Crear Producto</h2>
-    
-    `)
-})
-
 router.get('/dashboard', async (req,res) => {
     try {
         const path = req.path;
@@ -126,22 +110,93 @@ router.get('/dashboard', async (req,res) => {
     } catch (error) {
         console.log(error);
     }
-})
+});
 
-
-/*router.post('/', async (req,res) => {
+router.get('/dashboard/new', async (req,res) => {
+    const path = req.path.includes('/dashboard') ? '/dashboard' : '';
     try {
-        if(req.file) {
-            const { filename } = req.file;
-            product.setImage(filename);
-        }
-        const product = await Product.create({...req.body});
-        res.status(201).send({message: "Product successfully created", product});
+        res.send(`
+        ${getNavBar(path)}
+            <div class="new-product">
+                <h2>Crear producto</h2>
+                <div class="form">
+                    <form action="/dashboard" method="post">
+                        <div>
+                            <label for="name">Nombre:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div>
+                            <label for="description">Descripción:</label>
+                            <textarea id="description" name="description" required></textarea>
+                        </div>
+                        <div>
+                            <label for="price">Precio:</label>
+                            <input type="number" id="price" name="price" required>
+                        </div>
+                        <div>
+                            <label for="image">Imagen:</label>
+                            <input type="text" id="image" name="image">
+                        </div>
+                        <div>
+                            <label for="category">Categoría:</label>
+                            <select name="category" id="category">
+                                <option value="camisetas">Camisetas</option>
+                                <option value="pantalones">Pantalones</option>
+                                <option value="zapatos">Zapatos</option>
+                                <option value="accesorios">Accesorios</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="size">Talla:</label>
+                            <select name="size" id="size">
+                                <option value="XS">XS</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                            </select>
+                        </div>
+                        <button type="submit">Crear</button>
+                    </form>
+                </div>
+            </div>
+        `)
+    } catch (error) {
+        
+    }
+});
+
+router.get('/dashboard/:productId', async (req,res) => {
+    try {
+        const path = req.path.includes('/dashboard') ? '/dashboard' : '';
+        const product = await Product.findById(req.params.productId);
+        res.send(getNavBar(path) + getProduct(path, product));
+    } catch (error) {
+        console.log("Find product by id: ", error);
+    }
+});
+
+router.get('/dashboard/:productId/delete', async (req,res) => {
+    const path = req.path.includes('/dashboard') ? '/dashboard' : '';
+    try {
+        const product = await Product.findByIdAndDelete(req.params.productId);
+        res.send(getNavBar(path) + 'Product deleted');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(getNavBar(path) + 'There was a problem trying to delete a product')
+    }
+});
+
+router.post('/dashboard', async (req,res) => {
+    try {
+        const { name, description, price, image, category, size } = req.body;
+        const product = await Product.create({ name, description, price, image, category, size });
+        res.redirect('/dashboard')
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: "There was a problem trying to create a product" });
     }
-})*/
+})
 
 
 module.exports = router;
