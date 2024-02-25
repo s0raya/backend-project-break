@@ -13,7 +13,7 @@ const ProductSchema = new mongoose.Schema(
         image: String,
         category: {
             type: String,
-            enum: ['Camisetas', 'Pantalones', 'Zapatos', 'Accesorios'],
+            enum: ['camisetas', 'pantalones', 'zapatos', 'accesorios'],
             required: true
         },
         size: {
