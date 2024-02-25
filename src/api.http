@@ -1,0 +1,17 @@
+###
+POST http://localhost:8080/
+Content-Type: application/json
+
+{
+    "name": "Camiseta", 
+    "description":"Camiseta con logo moderna",
+    "image": "",
+    "category": "Camisetas",
+    "size": "M",
+    "price": 12.5
+}
+###
+GET http://localhost:8080/products
+
+###
+GET http://localhost:8080/products/65da72e3a4ba37cbbf86ab27

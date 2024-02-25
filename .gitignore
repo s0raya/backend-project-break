@@ -25,7 +25,7 @@ package-lock.json
 # Archivos de construcción
 /build/  
 /dist/  
-/out/   
+/out/  
 /build-output/
 
 # Archivos de configuración de editor
