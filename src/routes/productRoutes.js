@@ -4,35 +4,60 @@ const Product = require('../models/Product.js');
 const methodOverride = require('method-override');
 router.use(methodOverride('_method'));
 
+
+//Funcion para obtener la barra de navegación, teniendo en cuenta la ruta.
 const getNavBar = (path, category) => {
     let html = '';
     if(path === '/dashboard' || path === '/dashboard/') {
         html = `
-            <nav class="navbar">
-                <a href="/dashboard">Productos</a>
-                <a href="/dashboard/?category=Camisetas">Camisetas</a>
-                <a href="/dashboard/?category=Pantalones">Pantalones</a>
-                <a href="/dashboard/?category=Zapatos">Zapatos</a>
-                <a href="/dashboard/?category=Accesorios">Accesorios</a>
-                <a href="/dashboard/new">Nuevo Producto</a>
-                <a href="">Logout</a>   
-            </nav>
+            <!DOCTYPE html>
+            <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="/styles.css">
+                    <title>Tienda</title>
+                </head>
+                <body>
+                    <nav class="navbar">
+                        <a href="/dashboard">Productos</a>
+                        <a href="/dashboard/?category=Camisetas">Camisetas</a>
+                        <a href="/dashboard/?category=Pantalones">Pantalones</a>
+                        <a href="/dashboard/?category=Zapatos">Zapatos</a>
+                        <a href="/dashboard/?category=Accesorios">Accesorios</a>
+                        <a href="/dashboard/new">Nuevo Producto</a>
+                        <a href="">Logout</a>   
+                    </nav>
+                </body>
+            </html> 
         `
     } else {
         html = `
-            <nav class="navbar">
-            <a href="/products">Productos</a>
-            <a href="/products/?category=Camisetas">Camisetas</a>
-            <a href="/products/?category=Pantalones">Pantalones</a>
-            <a href="/products/?category=Zapatos">Zapatos</a>
-            <a href="/products/?category=Accesorios">Accesorios</a>
-            <a href="">Login</a>   
-        </nav>  
+            <!DOCTYPE html>
+            <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="/style.css">
+                    <title>Tienda</title>
+                </head>
+                <body>
+                    <nav class="navbar">
+                    <a href="/products">Productos</a>
+                    <a href="/products/?category=Camisetas">Camisetas</a>
+                    <a href="/products/?category=Pantalones">Pantalones</a>
+                    <a href="/products/?category=Zapatos">Zapatos</a>
+                    <a href="/products/?category=Accesorios">Accesorios</a>
+                    <a href="">Login</a>   
+                    </nav>  
+                </body>
+            </html>
         `
     }
     return html;
 };
 
+//Funcion para printar por pantalla todos los productos, teniendo en cuenta la ruta.
 const getProducts = (path, products) => {
     let html = '';
     for(let product of products) {
@@ -40,7 +65,7 @@ const getProducts = (path, products) => {
             <h2 class="title">Productos</h2>
             <div class="product-card">
                 <h3>${product.name}</h3>
-                <img src="/images/${product.image}" alt="${product.name}">
+                <img src="images/camiseta.webp" alt="${product.name}">
                 <p>${product.description}</p>
                 <p>${product.price}€</p>
                 <button><a href="${path}/${product._id}">Ver</a></button>
@@ -50,6 +75,7 @@ const getProducts = (path, products) => {
     return html;
 };
 
+//Función para ver el detalle de un producto, teniendo en cuenta la ruta.
 const getProduct = (path, product) => {
     let html = '';
     if(path === '/dashboard') {
@@ -190,6 +216,7 @@ router.get('/dashboard/:productId/delete', async (req,res) => {
         res.status(500).send(getNavBar(path) + 'There was a problem trying to delete a product')
     }
 });
+
 
 router.post('/dashboard', async (req,res) => {
     try {

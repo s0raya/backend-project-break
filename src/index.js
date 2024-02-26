@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-app.use('/public', express.static(`../${__dirname}/public/images`));
+app.use(express.static('public'));
 
 app.use('/', routes);
 
