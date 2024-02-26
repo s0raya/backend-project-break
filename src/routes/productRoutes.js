@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product.js');
+const methodOverride = require('method-override');
+router.use(methodOverride('_method'));
 
 
 //Funcion para obtener la barra de navegación, teniendo en cuenta la ruta.
@@ -80,12 +82,12 @@ const getProduct = (path, product) => {
         html += `
             <div class="product-details">
                 <h2>${product.name}</h2>
-                <img src="${product.image}" alt="${product.name}">
+                <img src="/images/${product.image}" alt="${product.name}">
                 <p>${product.description}</p>
                 <p>${product.price}€</p>
                 <p>Categoria: ${product.category}</p>
                 <p>Talla: ${product.size}</p>
-                <button><a href="">Editar</a></button>
+                <button><a href="${path}/${product._id}/edit">Editar</a></button>
                 <button><a href="${path}/${product._id}/delete">Borrar</a></button>
             </div>
         `
@@ -93,7 +95,7 @@ const getProduct = (path, product) => {
         html += `
             <div class="product-details">
                 <h2>${product.name}</h2>
-                <img src="${product.image}" alt="${product.name}">
+                <img src="/images/${product.image}" alt="${product.name}">
                 <p>${product.description}</p>
                 <p>${product.price}€</p>
                 <p>Categoria: ${product.category}</p>
@@ -188,8 +190,10 @@ router.get('/dashboard/new', async (req,res) => {
             </div>
         `)
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).send({ message: "There was a problem trying to create a product" });
     }
+    
 });
 
 router.get('/dashboard/:productId', async (req,res) => {
@@ -223,7 +227,74 @@ router.post('/dashboard', async (req,res) => {
         console.log(error);
         res.status(500).send({ message: "There was a problem trying to create a product" });
     }
+});
+
+router.put('/dashboard/:productId', async (req, res) => {
+    try {
+        const { name, description, price, image, category, size } = req.body;
+        const updatedProduct = await  Product.findByIdAndUpdate(req.params.productId, {name, description, price, image, category, size }, { new: true });
+        const path = req.path;
+        res.send(getNavBar(path) + getProduct(path, updatedProduct));
+    } catch (error) {
+       console.log(error) 
+       res.status(500).send({ message: "There was a problem trying to update the product" });
+    }
 })
+router.get('/dashboard/:productId/edit', async (req, res) => {
+    try {
+        const path = req.path.includes('/dashboard') ? '/dashboard' : '';
+        const product = await Product.findById(req.params.productId);
+        res.send(`
+            ${getNavBar(path)}
+            <div class="edit-product">
+                <h2>Editar producto</h2>
+                <div class="form">
+                    <form action="/dashboard/${product._id}?_method=PUT" method="post">
+                        <div>
+                            <label for="name">Nombre:</label>
+                            <input type="text" id="name" name="name" value="${product.name}" required>
+                        </div>
+                        <div>
+                            <label for="description">Descripción:</label>
+                            <textarea id="description" name="description" required>${product.description}</textarea>
+                        </div>
+                        <div>
+                            <label for="price">Precio:</label>
+                            <input type="number" id="price" name="price" value="${product.price}" required>
+                        </div>
+                        <div>
+                            <label for="image">Imagen:</label>
+                            <input type="text" id="image" name="image" value="${product.image}">
+                        </div>
+                        <div>
+                            <label for="category">Categoría:</label>
+                            <select name="category" id="category">
+                                <option value="camisetas" ${product.category === 'camisetas' ? 'selected' : ''}>Camisetas</option>
+                                <option value="pantalones" ${product.category === 'pantalones' ? 'selected' : ''}>Pantalones</option>
+                                <option value="zapatos" ${product.category === 'zapatos' ? 'selected' : ''}>Zapatos</option>
+                                <option value="accesorios" ${product.category === 'accesorios' ? 'selected' : ''}>Accesorios</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="size">Talla:</label>
+                            <select name="size" id="size">
+                                <option value="XS" ${product.size === 'XS' ? 'selected' : ''}>XS</option>
+                                <option value="S" ${product.size === 'S' ? 'selected' : ''}>S</option>
+                                <option value="M" ${product.size === 'M' ? 'selected' : ''}>M</option>
+                                <option value="L" ${product.size === 'L' ? 'selected' : ''}>L</option>
+                                <option value="XL" ${product.size === 'XL' ? 'selected' : ''}>XL</option>
+                            </select>
+                        </div>
+                        <button type="submit">Actualizar</button>
+                    </form>
+                </div>
+            </div>
+        `);
+    } catch (error) {
+        console.log("Find product by id: ", error);
+        res.status(500).send({ message: "There was a problem trying to find the product for editing" });
+    }
+});
 
 
 module.exports = router;
