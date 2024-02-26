@@ -31,8 +31,4 @@ const ProductSchema = new mongoose.Schema(
 
 const Product = mongoose.model('Product', ProductSchema);
 
-/*ProductSchema.methods.setImage = function setImage(filename) {
-    this.image = `http://localhost/${process.env.PORT}/public/${filename}`
-}*/
-
 module.exports = Product;

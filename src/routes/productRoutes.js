@@ -106,6 +106,7 @@ const getProduct = (path, product) => {
     return html;
 }
 
+//Redireccion a /products
 router.get('/', (req,res) => {
     res.redirect('/products');
 })
