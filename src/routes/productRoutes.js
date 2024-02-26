@@ -65,7 +65,7 @@ const getProducts = (path, products) => {
             <h2 class="title">Productos</h2>
             <div class="product-card">
                 <h3>${product.name}</h3>
-                <img src="images/camiseta.webp" alt="${product.name}">
+                <img src="images/${product.image}" alt="${product.name}">
                 <p>${product.description}</p>
                 <p>${product.price}€</p>
                 <button><a href="${path}/${product._id}">Ver</a></button>
