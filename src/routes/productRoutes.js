@@ -6,7 +6,7 @@ router.use(methodOverride('_method'));
 
 
 //Funcion para obtener la barra de navegación, teniendo en cuenta la ruta.
-const getNavBar = (path) => {
+const getNavBar = (path, category) => {
     let html = '';
     if(path === '/dashboard' || path === '/dashboard/') {
         html = `
@@ -38,7 +38,7 @@ const getNavBar = (path) => {
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <link rel="stylesheet" href="/style.css">
+                    <link rel="stylesheet" href="/styles.css">
                     <title>Tienda</title>
                 </head>
                 <body>
@@ -61,12 +61,11 @@ const getNavBar = (path) => {
 const getProducts = (path, products) => {
     let html = '';
     for(let product of products) {
-        console.log(product.image);
         html += `
             <h2 class="title">Productos</h2>
             <div class="product-card">
                 <h3>${product.name}</h3>
-                <img src="images/${product.image}" alt="${product.name}">
+                <img src="/images/${product.image}" alt="${product.name}">
                 <p>${product.description}</p>
                 <p>${product.price}€</p>
                 <button><a href="${path}/${product._id}">Ver</a></button>
@@ -79,7 +78,7 @@ const getProducts = (path, products) => {
 //Función para ver el detalle de un producto, teniendo en cuenta la ruta.
 const getProduct = (path, product) => {
     let html = '';
-    if(path === '/dashboard') {
+    if(path === '/dashboard'  || path === '/dashboard/') {
         html += `
             <div class="product-details">
                 <h2>${product.name}</h2>
@@ -107,12 +106,10 @@ const getProduct = (path, product) => {
     return html;
 }
 
-//Redireccion a /products
 router.get('/', (req,res) => {
     res.redirect('/products');
 })
 
-//Obtener todos los productos desde la ruta /products
 router.get('/products', async (req,res) => {
     try {
         const path = req.path;
@@ -123,7 +120,6 @@ router.get('/products', async (req,res) => {
     }
 });
 
-//Ver el detalle de un producto desde la ruta /products
 router.get('/products/:productId', async (req,res) => {
     try {
         const path = req.path;
@@ -134,7 +130,6 @@ router.get('/products/:productId', async (req,res) => {
     }
 });
 
-//Obtener todos los productos desde la ruta /dashboard
 router.get('/dashboard', async (req,res) => {
     try {
         const path = req.path;
@@ -145,7 +140,6 @@ router.get('/dashboard', async (req,res) => {
     }
 });
 
-//Ruta y formulario para crear un nuevo producto
 router.get('/dashboard/new', async (req,res) => {
     const path = req.path.includes('/dashboard') ? '/dashboard' : '';
     try {
@@ -169,8 +163,7 @@ router.get('/dashboard/new', async (req,res) => {
                         </div>
                         <div>
                             <label for="image">Imagen:</label>
-                            <input type="search" id="image" name="image">
-                            <input type="submit" value="Buscar">
+                            <input type="file" id="image" name="image" accept=".webp, .jpg, .jpeg">
                         </div>
                         <div>
                             <label for="category">Categoría:</label>
@@ -203,7 +196,6 @@ router.get('/dashboard/new', async (req,res) => {
     
 });
 
-//Ver el detalle de un producto desde la ruta /dashboard
 router.get('/dashboard/:productId', async (req,res) => {
     try {
         const path = req.path.includes('/dashboard') ? '/dashboard' : '';
@@ -214,7 +206,6 @@ router.get('/dashboard/:productId', async (req,res) => {
     }
 });
 
-//Eliminar un producto
 router.get('/dashboard/:productId/delete', async (req,res) => {
     const path = req.path.includes('/dashboard') ? '/dashboard' : '';
     try {
@@ -226,7 +217,6 @@ router.get('/dashboard/:productId/delete', async (req,res) => {
     }
 });
 
-//Ruta para crear el nuevo producto en la base de datos
 router.post('/dashboard', async (req,res) => {
     try {
         const { name, description, price, image, category, size } = req.body;
@@ -238,11 +228,10 @@ router.post('/dashboard', async (req,res) => {
     }
 });
 
-//Editar un producto
 router.put('/dashboard/:productId', async (req, res) => {
     try {
         const { name, description, price, image, category, size } = req.body;
-        const updatedProduct = await  Product.findByIdAndUpdate(req.params.productId, {name, description, price, image, category, size }, { new: true });
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.productId, {name, description, price, image, category, size }, { new: true });
         const path = req.path;
         res.send(getNavBar(path) + getProduct(path, updatedProduct));
     } catch (error) {
@@ -250,8 +239,6 @@ router.put('/dashboard/:productId', async (req, res) => {
        res.status(500).send({ message: "There was a problem trying to update the product" });
     }
 })
-
-//Editar un producto
 router.get('/dashboard/:productId/edit', async (req, res) => {
     try {
         const path = req.path.includes('/dashboard') ? '/dashboard' : '';
