@@ -57,7 +57,7 @@ const getNavBar = (path, category) => {
     return html;
 };
 
-//Funcion para printar por pantalla todos los productos, teniendo en cuenta la ruta.
+//Funcion para pintar por pantalla todos los productos, teniendo en cuenta la ruta.
 const getProducts = (path, products) => {
     let html = '';
     for(let product of products) {
