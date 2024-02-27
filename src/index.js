@@ -4,7 +4,7 @@ const methodOverride = require('method-override');
 const dbConnection = require('./config/db.js');
 const productRoutes = require('./routes/productRoutes.js');
 const PORT = process.env.PORT || 3000;
-
+const productRoutesApi = require('./routesApi/productRoutesApi.js')
 
 
 app.disable('x-powered-by');
@@ -15,6 +15,7 @@ app.use(methodOverride('_method'));
 app.use(express.static('public'));
 
 app.use('/', productRoutes);
+app.use('/api', productRoutesApi)
 
 dbConnection();
 
