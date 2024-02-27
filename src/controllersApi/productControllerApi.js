@@ -1,7 +1,7 @@
 const Product = require('../models/Product');
 
 //Funcion para obtener la barra de navegación, teniendo en cuenta la ruta.
-const getNavBar = (path, category) => {
+/*const getNavBar = (path, category) => {
     let html = '';
     if(path === '/dashboard' || path === '/dashboard/') {
         html = `
@@ -50,10 +50,10 @@ const getNavBar = (path, category) => {
         `
     }
     return html;
-};
+};*/
 
 //Funcion para pintar por pantalla todos los productos, teniendo en cuenta la ruta.
-const getProducts = (path, products) => {
+/*const getProducts = (path, products) => {
     let html = '';
     for(let product of products) {
         html += `
@@ -68,10 +68,10 @@ const getProducts = (path, products) => {
         `;
     }
     return html;
-};
+};*/
 
 //Función para ver el detalle de un producto, teniendo en cuenta la ruta.
-const getProduct = (path, product) => {
+/*const getProduct = (path, product) => {
     let html = '';
     if(path === '/dashboard'  || path === '/dashboard/') {
         html += `
@@ -99,20 +99,21 @@ const getProduct = (path, product) => {
         `
     }
     return html;
-};
+};*/
 
 const showProducts = async (req, res) => {
     try {
         const path = req.path;
+        console.log(path);
         const products = await Product.find();
-        res.json({ navbar: getNavBar(path), products: getProducts(path, products) });
+        res.json(products);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).send({ message: "There was a problem trying get all products" });
     }
 };
 
-const showProductById = async (req, res) => {
+/*const showProductById = async (req, res) => {
     try {
         const path = req.path;
         const product = await Product.findById(req.params.productId);
@@ -183,16 +184,16 @@ const deleteProductById = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
-
+*/
 module.exports = {
-    getNavBar,
+    /*getNavBar,
     getProducts,
-    getProduct,
-    showProducts,
-    showProductById,
+    getProduct,*/
+    showProducts
+    /*showProductById,
     showProductsLogin,
     showProductByIdLogin,
     createProduct,
     updateProductById,
-    deleteProductById
+    deleteProductById*/
 };

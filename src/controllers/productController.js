@@ -1,8 +1,4 @@
 const Product = require('../models/Product');
-const methodOverride = require('method-override');
-
-
-router.use(methodOverride('_method'));
 
 //Funcion para obtener la barra de navegación, teniendo en cuenta la ruta.
 const getNavBar = (path, category) => {
@@ -166,7 +162,7 @@ const showNewProductForm = async (req,res) => {
                         </div>
                         <div>
                             <label for="price">Precio:</label>
-                            <input type="number" id="price" name="price" required>
+                            <input type="number" id="price" name="price" step=".01" required>
                         </div>
                         <div>
                             <label for="image">Imagen:</label>
