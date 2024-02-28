@@ -16,10 +16,10 @@ const getNavBar = (path, category) => {
                 <body>
                     <nav class="navbar">
                         <a href="/dashboard">Productos</a>
-                        <a href="/dashboard/?category=Camisetas">Camisetas</a>
-                        <a href="/dashboard/?category=Pantalones">Pantalones</a>
-                        <a href="/dashboard/?category=Zapatos">Zapatos</a>
-                        <a href="/dashboard/?category=Accesorios">Accesorios</a>
+                        <a href="/dashboard?category=Camisetas">Camisetas</a>
+                        <a href="/dashboard?category=Pantalones">Pantalones</a>
+                        <a href="/dashboard?category=Zapatos">Zapatos</a>
+                        <a href="/dashboard?category=Accesorios">Accesorios</a>
                         <a href="/dashboard/new">Nuevo Producto</a>
                         <a href="">Logout</a>   
                     </nav>
@@ -39,10 +39,10 @@ const getNavBar = (path, category) => {
                 <body>
                     <nav class="navbar">
                     <a href="/products">Productos</a>
-                    <a href="/products/?category=Camisetas">Camisetas</a>
-                    <a href="/products/?category=Pantalones">Pantalones</a>
-                    <a href="/products/?category=Zapatos">Zapatos</a>
-                    <a href="/products/?category=Accesorios">Accesorios</a>
+                    <a href="/products?category=Camisetas">Camisetas</a>
+                    <a href="/products?category=Pantalones">Pantalones</a>
+                    <a href="/products?category=Zapatos">Zapatos</a>
+                    <a href="/products?category=Accesorios">Accesorios</a>
                     <a href="">Login</a>   
                     </nav>  
                 </body>
@@ -55,17 +55,17 @@ const getNavBar = (path, category) => {
 //Funcion para pintar por pantalla todos los productos, teniendo en cuenta la ruta.
 const getProducts = (path, products) => {
     let html = '';
-    for(let product of products) {
-        html += `
-            <h2 class="title">Productos</h2>
-            <div class="product-card">
-                <h3>${product.name}</h3>
-                <img src="/images/${product.image}" alt="${product.name}">
-                <p>${product.description}</p>
-                <p>${product.price}€</p>
-                <button><a href="${path}/${product._id}">Ver</a></button>
-            </div>
-        `;
+    for (let product of products) {        
+            html += `
+                <h2 class="title">Productos</h2>
+                <div class="product-card">
+                    <h3>${product.name}</h3>
+                    <img src="/images/${product.image}" alt="${product.name}">
+                    <p>${product.description}</p>
+                    <p>${product.price}€</p>
+                    <button><a href="${path}/${product._id}">Ver</a></button>
+                </div>
+            `;        
     }
     return html;
 };
@@ -102,6 +102,8 @@ const getProduct = (path, product) => {
 };
 
 
+
+
 const showProducts = async (req,res) => {
     try {
         const path = req.path;
@@ -112,6 +114,16 @@ const showProducts = async (req,res) => {
     }
 };
 
+const showProductsApi = async (req, res) => {
+    try {
+        const products = await  Product.find();
+        res.json(products);
+    } catch (error) {
+        console.log(error);
+        
+    }
+};
+
 const showProductById = async (req,res) => {
     try {
         const path = req.path;
@@ -119,6 +131,20 @@ const showProductById = async (req,res) => {
         res.send(getNavBar(path) + getProduct(path, product));
     } catch (error) {
         console.log(error);
+       
+    }
+};
+
+const showProductByIdApi =async (req,res) => {
+    try {
+        const product = await Product.findById(req.params.productId);
+        if(!product){
+            return res.status(404).json({message: "No product found"});
+         }
+         res.json(product);
+    }catch (error) {
+        console.log(error)
+        res.status(500).json({message:"Error getting the product."})
     }
 };
 
@@ -132,11 +158,31 @@ const showProductsLogin = async (req,res) => {
     }
 };
 
+const showProductsLoginApi = async (req, res) => {
+    try {
+        const products = await  Product.find();
+        res.json(products);
+    } catch (error) {
+        console.log(error);
+        
+    }
+};
+
 const showProductByIdLogin = async (req,res) => {
     try {
         const path = req.path.includes('/dashboard') ? '/dashboard' : '';
         const product = await Product.findById(req.params.productId);
         res.send(getNavBar(path) + getProduct(path, product));
+    } catch (error) {
+        console.log("Find product by id: ", error);
+    }
+};
+
+const showProductByIdLoginApi = async (req,res) => {
+    try {
+        const path = req.path.includes('/dashboard') ? '/dashboard' : '';
+        const product = await Product.findById(req.params.productId);
+        res.json(product);
     } catch (error) {
         console.log("Find product by id: ", error);
     }
@@ -210,6 +256,17 @@ const createProduct = async (req,res) => {
     }
 };
 
+const createProductApi = async (req, res) => {
+    try {
+        const { name, description, price, image, category, size } = req.body;
+        const product = await Product.create({ name, description, price, image, category, size });
+        res.status(201).json(product);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "There was a problem trying to create a product" });
+    }
+};
+
 const updateProductById = async (req, res) => {
     try {
         const { name, description, price, image, category, size } = req.body;
@@ -219,6 +276,20 @@ const updateProductById = async (req, res) => {
     } catch (error) {
        console.log(error) 
        res.status(500).send({ message: "There was a problem trying to update the product" });
+    }
+};
+
+const updateProductByIdApi = async (req, res) => {
+    try {
+        const { name, description, price, image, category, size } = req.body;
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.productId, { name, description, price, image, category, size }, { new: true });
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "No product found" });
+        }
+        res.json(updatedProduct);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Hubo un problema al actualizar el producto" });
     }
 };
 
@@ -289,16 +360,58 @@ const deleteProductById = async (req,res) => {
     }
 };
 
+const deleteProductByIdApi = async (req, res) => {
+    try {
+        const product = await Product.findByIdAndDelete(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ message: "Producto no encontrado" });
+        }
+        res.json({ message: "Producto eliminado exitosamente" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Hubo un problema al eliminar el producto" });
+    }
+};
+
+/*const showProductsByCategory = async (req, res) => {
+    const path = req.path.includes('/dashboard') ? '/dashboard' : '';
+    const category = req.params.category;
+    try {
+        let products;
+        if(category){
+        products = await Product.find({ category: category });
+        }else{
+            products = await Product.find();
+        }
+        res.send(getNavBar(path, category) + getProducts(path, products)); 
+    } catch (error) {
+        console.log(error);
+        
+    }
+};*/
+
+
+
+
 
 module.exports = { getNavBar,
      getProducts, 
      getProduct, 
-     showProducts, 
-     showProductById, 
-     showProductsLogin, 
-     showProductByIdLogin, 
+     showProducts,
+     showProductsApi, 
+     showProductById,
+     showProductByIdApi, 
+     showProductsLogin,
+     showProductsLoginApi, 
+     showProductByIdLogin,
+     showProductByIdLoginApi, 
      showNewProductForm, 
-     createProduct, 
+     createProduct,
+     createProductApi,
      updateProductById, 
+     updateProductByIdApi,
      showEditProductForm,
-     deleteProductById };
+     deleteProductById,
+     deleteProductByIdApi,
+     //showProductsByCategory
+    }; 
