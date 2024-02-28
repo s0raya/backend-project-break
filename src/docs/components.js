@@ -79,7 +79,12 @@ module.exports = {
                         required: true
                     }
                 }
-            }
+            }/*,
+            _id:{
+                type:'objectId',
+                description:"task identification number",
+                example:"65dd112872bd462a50cfcfac"
+            }*/
         }
     }
 }
