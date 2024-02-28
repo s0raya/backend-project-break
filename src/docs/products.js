@@ -1,28 +1,18 @@
 module.exports = {
     paths: {
-        "/api":{
+        "/api/products":{
             get:{
-                tags: ["Shop"],
+                tags: ["Products"],
                 summary: "Get all products",
                 operationId: "GetProducts",
-                parameters:[],
-                /*requestBody:{
-                    required:false,
-                    content:{
-                        'application/json':{
-                            schema:{
-                                $ref:"#/components/schemas/Product"
-                            }
-                        }
-                    }
-                },*/                
+                parameters:[],             
                 responses: {
-                    201: { 
+                    200: { 
                         description: "Products obtained",
                         content: {
                             "application/json": {
                                 schema: {
-                                $ref: "#/components/schemas/Product"
+                                    $ref: "#/components/schemas/Product"
                                 }
                             }
                         },

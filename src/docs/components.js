@@ -6,7 +6,7 @@ module.exports = {
                 properties:{
                     _id:{
                         type:'objectId',
-                        description:"task identification number",
+                        description:"product identification number",
                         example:"65dd112872bd462a50cfcfac"
                     },
                     name:{

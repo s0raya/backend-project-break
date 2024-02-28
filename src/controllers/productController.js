@@ -1,5 +1,6 @@
 const Product = require('../models/Product');
 
+
 //Funcion para obtener la barra de navegación, teniendo en cuenta la ruta.
 const getNavBar = (path, category) => {
     let html = '';
@@ -15,11 +16,11 @@ const getNavBar = (path, category) => {
                 </head>
                 <body>
                     <nav class="navbar">
-                        <a href="/dashboard">Productos</a>
-                        <a href="/dashboard?category=Camisetas">Camisetas</a>
-                        <a href="/dashboard?category=Pantalones">Pantalones</a>
-                        <a href="/dashboard?category=Zapatos">Zapatos</a>
-                        <a href="/dashboard?category=Accesorios">Accesorios</a>
+                        <a href="/dashboard/">Productos</a>
+                        <a href="/dashboard/?category=camisetas">Camisetas</a>
+                        <a href="/dashboard/?category=pantalones">Pantalones</a>
+                        <a href="/dashboard/?category=zapatos">Zapatos</a>
+                        <a href="/dashboard/?category=accesorios">Accesorios</a>
                         <a href="/dashboard/new">Nuevo Producto</a>
                         <a href="">Logout</a>   
                     </nav>
@@ -38,11 +39,11 @@ const getNavBar = (path, category) => {
                 </head>
                 <body>
                     <nav class="navbar">
-                    <a href="/products">Productos</a>
-                    <a href="/products?category=Camisetas">Camisetas</a>
-                    <a href="/products?category=Pantalones">Pantalones</a>
-                    <a href="/products?category=Zapatos">Zapatos</a>
-                    <a href="/products?category=Accesorios">Accesorios</a>
+                    <a href="/products/">Productos</a>
+                    <a href="/products/?category=camisetas">Camisetas</a>
+                    <a href="/products/?category=pantalones">Pantalones</a>
+                    <a href="/products/?category=zapatos">Zapatos</a>
+                    <a href="/products/?category=accesorios">Accesorios</a>
                     <a href="">Login</a>   
                     </nav>  
                 </body>
@@ -102,8 +103,6 @@ const getProduct = (path, product) => {
 };
 
 
-
-
 const showProducts = async (req,res) => {
     try {
         const path = req.path;
@@ -111,16 +110,6 @@ const showProducts = async (req,res) => {
         res.send(getNavBar(path) + getProducts(path, products));
     } catch (error) {
         console.log(error);
-    }
-};
-
-const showProductsApi = async (req, res) => {
-    try {
-        const products = await  Product.find();
-        res.json(products);
-    } catch (error) {
-        console.log(error);
-        
     }
 };
 
@@ -135,19 +124,6 @@ const showProductById = async (req,res) => {
     }
 };
 
-const showProductByIdApi =async (req,res) => {
-    try {
-        const product = await Product.findById(req.params.productId);
-        if(!product){
-            return res.status(404).json({message: "No product found"});
-         }
-         res.json(product);
-    }catch (error) {
-        console.log(error)
-        res.status(500).json({message:"Error getting the product."})
-    }
-};
-
 const showProductsLogin = async (req,res) => {
     try {
         const path = req.path;
@@ -155,16 +131,6 @@ const showProductsLogin = async (req,res) => {
         res.send(getNavBar(path) + getProducts(path, products));
     } catch (error) {
         console.log(error);
-    }
-};
-
-const showProductsLoginApi = async (req, res) => {
-    try {
-        const products = await  Product.find();
-        res.json(products);
-    } catch (error) {
-        console.log(error);
-        
     }
 };
 
@@ -178,17 +144,6 @@ const showProductByIdLogin = async (req,res) => {
     }
 };
 
-const showProductByIdLoginApi = async (req,res) => {
-    try {
-        const path = req.path.includes('/dashboard') ? '/dashboard' : '';
-        const product = await Product.findById(req.params.productId);
-        res.json(product);
-    } catch (error) {
-        console.log("Find product by id: ", error);
-    }
-};
-
-
 const showNewProductForm = async (req,res) => {
     const path = req.path.includes('/dashboard') ? '/dashboard' : '';
     try {
@@ -197,7 +152,7 @@ const showNewProductForm = async (req,res) => {
             <div class="new-product">
                 <h2>Crear producto</h2>
                 <div class="form">
-                    <form action="/dashboard" method="post">
+                    <form action="/dashboard/" method="post">
                         <div>
                             <label for="name">Nombre:</label>
                             <input type="text" id="name" name="name" required>
@@ -256,40 +211,18 @@ const createProduct = async (req,res) => {
     }
 };
 
-const createProductApi = async (req, res) => {
-    try {
-        const { name, description, price, image, category, size } = req.body;
-        const product = await Product.create({ name, description, price, image, category, size });
-        res.status(201).json(product);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "There was a problem trying to create a product" });
-    }
-};
-
 const updateProductById = async (req, res) => {
     try {
         const { name, description, price, image, category, size } = req.body;
         const updatedProduct = await Product.findByIdAndUpdate(req.params.productId, {name, description, price, image, category, size }, { new: true });
         const path = req.path;
-        res.send(getNavBar(path) + getProduct(path, updatedProduct));
+        res.send(`
+            ${getNavBar(path) + getProduct(path, updatedProduct)}
+            <a href="/dashboard" class="backProducts" id="backProducts">Volver</a>
+            `)
     } catch (error) {
        console.log(error) 
        res.status(500).send({ message: "There was a problem trying to update the product" });
-    }
-};
-
-const updateProductByIdApi = async (req, res) => {
-    try {
-        const { name, description, price, image, category, size } = req.body;
-        const updatedProduct = await Product.findByIdAndUpdate(req.params.productId, { name, description, price, image, category, size }, { new: true });
-        if (!updatedProduct) {
-            return res.status(404).json({ message: "No product found" });
-        }
-        res.json(updatedProduct);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Hubo un problema al actualizar el producto" });
     }
 };
 
@@ -360,58 +293,33 @@ const deleteProductById = async (req,res) => {
     }
 };
 
-const deleteProductByIdApi = async (req, res) => {
-    try {
-        const product = await Product.findByIdAndDelete(req.params.productId);
-        if (!product) {
-            return res.status(404).json({ message: "Producto no encontrado" });
-        }
-        res.json({ message: "Producto eliminado exitosamente" });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Hubo un problema al eliminar el producto" });
-    }
-};
 
-/*const showProductsByCategory = async (req, res) => {
-    const path = req.path.includes('/dashboard') ? '/dashboard' : '';
-    const category = req.params.category;
+const showProductsByCategory = async (req, res) => {
+    const path = req.path;
+    const category = req.query.category;
     try {
         let products;
         if(category){
-        products = await Product.find({ category: category });
+            products = await Product.find({ category: category });
         }else{
             products = await Product.find();
         }
         res.send(getNavBar(path, category) + getProducts(path, products)); 
     } catch (error) {
         console.log(error);
-        
+        res.status(500).send({ message: "Error when filtering products"});
     }
-};*/
+};
 
-
-
-
-
-module.exports = { getNavBar,
-     getProducts, 
-     getProduct, 
+module.exports = {
      showProducts,
-     showProductsApi, 
      showProductById,
-     showProductByIdApi, 
      showProductsLogin,
-     showProductsLoginApi, 
      showProductByIdLogin,
-     showProductByIdLoginApi, 
      showNewProductForm, 
      createProduct,
-     createProductApi,
      updateProductById, 
-     updateProductByIdApi,
      showEditProductForm,
      deleteProductById,
-     deleteProductByIdApi,
-     //showProductsByCategory
+     showProductsByCategory
     }; 
