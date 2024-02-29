@@ -12,6 +12,7 @@ router.get('/', (req,res) => {
 router.get('/products/', productController.showProductsByCategory);
 router.get('/products/', productController.showProducts);
 router.get('/products/:productId', productController.showProductById);
+router.get('/dashboard/', productController.showProductsByCategory);
 router.get('/dashboard/', productController.showProductsLogin);
 router.get('/dashboard/new', productController.showNewProductForm);
 router.get('/dashboard/:productId', productController.showProductByIdLogin);

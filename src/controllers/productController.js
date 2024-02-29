@@ -57,16 +57,16 @@ const getNavBar = (path, category) => {
 const getProducts = (path, products) => {
     let html = '';
     for (let product of products) {        
-            html += `
-                <h2 class="title">Productos</h2>
-                <div class="product-card">
-                    <h3>${product.name}</h3>
-                    <img src="/images/${product.image}" alt="${product.name}">
-                    <p>${product.description}</p>
-                    <p>${product.price}€</p>
-                    <button><a href="${path}/${product._id}">Ver</a></button>
-                </div>
-            `;        
+                html += `
+                    <h2 class="title">Productos</h2>
+                    <div class="product-card">
+                        <h3>${product.name}</h3>
+                        <img src="/images/${product.image}" alt="${product.name}">
+                        <p>${product.description}</p>
+                        <p>${product.price}€</p>
+                        <button><a href="${path}${product._id}">Ver</a></button>
+                    </div>
+                `;        
     }
     return html;
 };
@@ -83,8 +83,8 @@ const getProduct = (path, product) => {
                 <p>${product.price}€</p>
                 <p>Categoria: ${product.category}</p>
                 <p>Talla: ${product.size}</p>
-                <button><a href="${path}/${product._id}/edit">Editar</a></button>
-                <button><a href="${path}/${product._id}/delete">Borrar</a></button>
+                <button><a href="${path}${product._id}/edit">Editar</a></button>
+                <button><a href="${path}${product._id}/delete">Borrar</a></button>
             </div>
         `
     } else {

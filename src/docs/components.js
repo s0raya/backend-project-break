@@ -13,33 +13,30 @@ module.exports = {
                         type: 'string',
                         description:'Product name',
                         example:'Pantalones molones',
-                        required: true
                     },
                     description:{
                         type:'string',
                         description: 'Product description',
                         example:'Pantalones rotos estampados',
-                        required: true
                     },
                     image:{
                         type: 'string',
                         description: 'Product image',
-                        required: false
                     },
                     category:{
                         type: 'string',
                         description: 'Product category',
-                        enum: ['camisetas', 'pantalones', 'zapatos', 'accesorios'],
-                        required: true
-                    },
+                        example:"pantalones",
+                        enum: ['camisetas', 'pantalones', 'zapatos', 'accesorios'],                  },
                     size:{
                         type: 'string',
+                        example: "M",
                         description: 'product size',
                     },
                     price:{
                         type: 'number',
+                        example: "12.5",
                         description: 'price of the product',
-                        required: true
                     }
                 }
             },
@@ -79,12 +76,7 @@ module.exports = {
                         required: true
                     }
                 }
-            }/*,
-            _id:{
-                type:'objectId',
-                description:"task identification number",
-                example:"65dd112872bd462a50cfcfac"
-            }*/
+            }
         }
     }
 }

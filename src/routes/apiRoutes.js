@@ -12,8 +12,6 @@ router.post('/api/dashboard', apiController.createProductApi);
 
 router.put('/api/dashboard/:productId', apiController.updateProductByIdApi);
 
-//router.get('/api/dashboard/:productId/edit', apiController.showEditProductForm);
-
 router.get('/api/dashboard/:productId/delete', apiController.deleteProductByIdApi);
 
 module.exports = router;

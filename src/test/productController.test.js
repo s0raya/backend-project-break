@@ -9,20 +9,33 @@ const {
     showEditProductForm,
     deleteProductById,
     showProductsByCategory
-} = require('../src/controllers/productController');
+} = require('../controllers/productController.js');
+const Product = require('../models/Product.js');
+
+jest.mock('../models/Product.js', () => ({
+    find: jest.fn(),
+    send: jest.fn(),
+    findById: jest.fn(),
+    create: jest.fn(),
+    findByIdAndUpdate: jest.fn(),
+    findByIdAndDelete: jest.fn()
+}));
 
 
-
-function resetProducts() {
-    products = {}; 
-}
-
-beforeEach(() => {
-    resetProducts();  
-});
 
 describe('showProducts', () => {
-    it('should get a product', () => {        
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+    it('show html with products', () => {
+        const mockProducts = [
+            { name: "camiseta", description: "camiseta con logo", price: 15, image:"", category: "camisetas", size: "M"},
+            { name: "pantalones", description: "pantalones rotos", price: 30, image:"", category: "pantalones", size: "L"}
+        ];
+
+        Product.find.mockResolvedValue(mockProducts);
+    })
+    /*it('should get HTML with products', () => {        
         const product = { name: 'pantalon corto', description: 'pantalon corto estampado', image: 'pantalonEstampado.jpg', category: 'pantalones', size: 'Xl', price: 12.5 };
         
         products[1] = product; 
@@ -32,12 +45,12 @@ describe('showProducts', () => {
         expect(result).toEqual([product]);
     });
 
-    it('should throw an error if the product does not exist', () => {        
+   it('should throw an error if the product does not exist', () => {        
         
         expect(() => showProducts(999)).toThrow('Product does not exist'); 
     });
 });
-/*describe('showProducts', () => {
+describe('showProducts', () => {
     it('should get a product', () => {        
         const product = { name: 'pantalon corto', description: 'pantalon corto estampado', image: 'pantalonEstampado.jpg', category: 'pantalones', size: 'Xl', price: 12.5 };
         const req = { path: '/dashboard' }; 
@@ -51,5 +64,5 @@ describe('showProducts', () => {
         const req = {}; 
         const res = {};      
         expect(() => showProducts(req, res)).toThrow('Product does not exist'); 
-    });
-});*/
+    });*/
+});

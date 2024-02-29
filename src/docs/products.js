@@ -2,13 +2,12 @@ module.exports = {
     paths: {
         "/api/products":{
             get:{
-                tags: ["Products"],
+                tags: ["Shop"],
                 summary: "Get all products",
                 operationId: "GetProducts",
                 parameters:[],             
                 responses: {
-                    200: { 
-                        description: "Products obtained",
+                    200: { description: "Products obtained"},
                         content: {
                             "application/json": {
                                 schema: {
@@ -16,15 +15,57 @@ module.exports = {
                                 }
                             }
                         },
-                    },    
-                    500: { description: "There was a problem trying get all products" }
+                    500: { description: "There was a problem trying get all products" },
                 },
             }
+        },
+        "/api/dashboard": {
+            post: {
+                tags: ["Shop"],
+                summary: "Create product",
+                operationId: "createProduct",
+                parameters: [],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/ProductInput",
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    201: { description: "Product succesfully created",},
+                    500: { description: "There was a problem trying to create a product"},
+                }
+            },
+            get:{
+                tags: ["Shop"],
+                summary: "Get products for the dashboard",
+                operationId: "GetProductsForDashboard",
+                responses: {
+                    200: {
+                        description: "Products obtained",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "array",
+                                    items: {
+                                        $ref: "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+            },
         },
         "/api/products/{productId}":{
             get:{
                 tags: ["Shop"],
-                /*summary: "Get a product by ID",
+                summary: "Get a product by ID",
                 operationId: "GetProductById",
                 parameters: [
                     {
@@ -50,76 +91,67 @@ module.exports = {
                     }
                     
                 }
-            }*/
-            }
-        },
-        "/api/dashboard":{
-            get:{
-                tags: ["Shop"],
-                /*summary: "Get products for the dashboard",
-                operationId: "GetProductsForDashboard",
-                responses: {
-                    200: {
-                        description: "Products obtained",
-                        content: {
-                            "application/json": {
-                                schema: {
-                                    type: "array",
-                                    items: {
-                                        $ref: "#/components/schemas/Product"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-            },
-            */
-            }
-        },
-        "/api/dashboard/new":{
-            get:{
-                tags: ["Shop"],
             }
         },
         "/api/dashboard/:productId":{
             get:{
                 tags: ["Shop"],
-            }
-        },
-        "/api/dashboard":{
-            post: {
-                tags: ["Shop"],/*
-                summary: "Create a new product",
-                operationId: "CreateProduct",
-                parameters:[
+                summary: "Get product by id",
+                operationId: "getProductById",
+                parameters: [
                     {
-                        name:"product",
-                        in:"body",
-                        required:true,
-                        schema:{
-                            $ref:"#/components/schemas/ProductInput"
+                        name: "_id",
+                        in: "path",
+                        schema: {
+                            $ref: "#/components/schemas/Product/properties/_id",
+                        },
+                        description: "Id of Product to obtain",
+                    },
+                ],
                 responses: {
-                    201: { description: "Product created" },
-                }
-            }*/
-                
+                    200: { description: "Product obtained"},
+                    500: { description: "There was a problem with the product with _id number"}
+                },
             },
-        },
-        "/api/dashboard/:productId":{
             put:{
                 tags: ["Shop"],
+                summary: "Update a product",
+                operationId: "UpdateProduct",
+                parameters: [{
+                    name: "_id",
+                    in: "path",
+                    schema: {
+                        $ref: "#/components/schemas/Product/properties/_id",
+                    },
+                    description: "Id of product to be updated"
+                }],
+                responses: {
+                    200: { description: "Product successfully updated"},
+                    404: { description: "Product not found"},
+                    500: { description: "There was a problem trying to update a product"}
+                }
             },
-        },
-        "/api/dashboard/:productId/edit":{
-            get:{
-                tags: ["Shop"],
-            }
         },
         "/api/dashboard/:productId/delete":{
             get:{
                 tags: ["Shop"],
+                summary: "Delete product by id",
+                operationId: "deleteProductById",
+                parameters: [
+                    {
+                        name: "_id",
+                        in: "path",
+                        schema: {
+                            $ref: "#/components/schemas/Product/properties/_id",
+                        },
+                        description: "Id of product to delete",
+                    },
+                ],
+                responses: {
+                    200: { description: "Product deleted"},
+                    404: { description: "Product not found"},
+                    500: { description: "There was a problem trying to delete a product"}
+                }
             }
         }
     }
