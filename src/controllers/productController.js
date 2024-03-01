@@ -202,6 +202,7 @@ const showNewProductForm = async (req,res) => {
 
 const createProduct = async (req,res) => {
     try {
+        console.log('entro web')
         const { name, description, price, image, category, size } = req.body;
         const product = await Product.create({ name, description, price, image, category, size });
         res.redirect('/dashboard')

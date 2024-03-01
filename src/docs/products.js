@@ -1,6 +1,6 @@
 module.exports = {
     paths: {
-        "/api/products":{
+        "/products":{
             get:{
                 tags: ["Shop"],
                 summary: "Get all products",
@@ -19,7 +19,7 @@ module.exports = {
                 },
             }
         },
-        "/api/dashboard": {
+        "/dashboard": {
             post: {
                 tags: ["Shop"],
                 summary: "Create product",
@@ -62,7 +62,7 @@ module.exports = {
                 }
             },
         },
-        "/api/products/{productId}":{
+        "/products/{productId}":{
             get:{
                 tags: ["Shop"],
                 summary: "Get a product by ID",
@@ -93,7 +93,7 @@ module.exports = {
                 }
             }
         },
-        "/api/dashboard/:productId":{
+        "/dashboard/:productId":{
             get:{
                 tags: ["Shop"],
                 summary: "Get product by id",
@@ -132,7 +132,7 @@ module.exports = {
                 }
             },
         },
-        "/api/dashboard/:productId/delete":{
+        "/dashboard/:productId/delete":{
             get:{
                 tags: ["Shop"],
                 summary: "Delete product by id",

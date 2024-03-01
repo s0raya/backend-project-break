@@ -31,6 +31,7 @@ module.exports = {
                     size:{
                         type: 'string',
                         example: "M",
+                        enum: ["XS", "S", "M", "L", "XL"],
                         description: 'product size',
                     },
                     price:{
@@ -47,33 +48,32 @@ module.exports = {
                         type: 'string',
                         description:'Product name',
                         example:'Pantalones molones',
-                        required: true
                     },
                     description:{
                         type:'string',
                         description: 'Product description',
-                        example:'Pantalones rotos estampados',
-                        required: true
+                        example:'Camiseta molona',
                     },
                     image:{
                         type: 'string',
                         description: 'Product image',
-                        required: false
                     },
                     category:{
                         type: 'string',
                         description: 'Product category',
                         enum: ['camisetas', 'pantalones', 'zapatos', 'accesorios'],
-                        required: true
+                        example: "camisetas"
                     },
                     size:{
                         type: 'string',
+                        enum: ["XS", "S", "M", "L", "XL"],
                         description: 'product size',
+                        example: "M"
                     },
                     price:{
                         type: 'number',
                         description: 'price of the product',
-                        required: true
+                        example: 12.5                      
                     }
                 }
             }
