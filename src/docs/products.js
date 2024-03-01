@@ -1,6 +1,6 @@
 module.exports = {
     paths: {
-        "/products":{
+        "/api/products":{
             get:{
                 tags: ["Shop"],
                 summary: "Get all products",
@@ -19,7 +19,7 @@ module.exports = {
                 },
             }
         },
-        "/dashboard": {
+        "/api/dashboard": {
             post: {
                 tags: ["Shop"],
                 summary: "Create product",
@@ -40,29 +40,8 @@ module.exports = {
                     500: { description: "There was a problem trying to create a product"},
                 }
             },
-            get:{
-                tags: ["Shop"],
-                summary: "Get products for the dashboard",
-                operationId: "GetProductsForDashboard",
-                responses: {
-                    200: {
-                        description: "Products obtained",
-                        content: {
-                            "application/json": {
-                                schema: {
-                                    type: "array",
-                                    items: {
-                                        $ref: "#/components/schemas/Product"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-            },
         },
-        "/products/{productId}":{
+        "/api/products/{_id}":{
             get:{
                 tags: ["Shop"],
                 summary: "Get a product by ID",
@@ -84,7 +63,7 @@ module.exports = {
                         content: {
                             "application/json": {
                                 schema: {
-                                    $ref: "#/components/schemas/_id"
+                                    $ref: "#/components/schemas/Product/properties/_id"
                                 }
                             }
                         }
@@ -93,26 +72,7 @@ module.exports = {
                 }
             }
         },
-        "/dashboard/{productId}":{
-            get:{
-                tags: ["Shop"],
-                summary: "Get product by id",
-                operationId: "getProductById",
-                parameters: [
-                    {
-                        name: "_id",
-                        in: "path",
-                        schema: {
-                            $ref: "#/components/schemas/Product/properties/_id",
-                        },
-                        description: "Id of Product to obtain",
-                    },
-                ],
-                responses: {
-                    200: { description: "Product obtained"},
-                    500: { description: "There was a problem with the product with _id number"}
-                },
-            },
+        "/api/dashboard/{_id}":{
             put:{
                 tags: ["Shop"],
                 summary: "Update a product",
@@ -125,6 +85,15 @@ module.exports = {
                     },
                     description: "Id of product to be updated"
                 }],
+                requestBody: {
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/ProductInput"
+                            },
+                        },
+                    },
+                },
                 responses: {
                     200: { description: "Product successfully updated"},
                     404: { description: "Product not found"},
@@ -132,7 +101,7 @@ module.exports = {
                 }
             },
         },
-        "/dashboard/:productId/delete":{
+        "/api/dashboard/{_id}/delete":{
             get:{
                 tags: ["Shop"],
                 summary: "Delete product by id",

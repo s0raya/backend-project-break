@@ -15,7 +15,7 @@ const apiController = {
         try {
             const product = await Product.findById(req.params.productId);
             if(!product){
-                return res.status(404).json({message: "No product found"});
+                return res.status(404).json({message: "Product not found"});
             }
             res.json(product);
         }catch (error) {
@@ -24,33 +24,8 @@ const apiController = {
         }
     },
 
-    async showProductsLoginApi(req, res) {
-        try {
-            const products = await  Product.find();
-            res.json(products);
-        } catch (error) {
-            console.log(error);
-            res.status(500).send({ message: "There was a problem trying to find products" });
-        }
-    },
-
-    async showProductByIdLoginApi(req,res) {
-        try {
-            const path = req.path.includes('/dashboard') ? '/dashboard' : '';
-            const product = await Product.findById(req.params.productId);
-            res.status(200).json(product);
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({
-                message: "There was a problem with the product with _id number: " +
-                req.params._id,
-            });
-        }
-    },
-
     async createProductApi(req, res) {
         try {
-            console.log('entro api');
             const product = await Product.create({...req.body });
             res.status(200).json({message: "Product succesfully created", product});
         } catch (error) {

@@ -4,9 +4,6 @@ const apiController = require('../controllers/apiController.js');
 
 router.get('/products', apiController.showProductsApi);
 router.get('/products/:productId', apiController.showProductByIdApi);
-router.get('/dashboard', apiController.showProductsLoginApi);
-
-router.get('/dashboard/:productId', apiController.showProductByIdLoginApi);
 
 router.post('/dashboard', apiController.createProductApi);
 

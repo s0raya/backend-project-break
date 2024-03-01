@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/productController');
+const productController = require('../controllers/productController.js');
 const methodOverride = require('method-override');
 
 router.use(methodOverride('_method'));

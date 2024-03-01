@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const dbConnection = require('./config/db.js');
 const routes = require('./routes/productRoutes.js');
+const apiRoutes = require("./routes/apiRoutes.js");
 const swaggerUI = require('swagger-ui-express');
 const docs = require('./docs/index.js');
 const PORT = process.env.PORT || 3000;
@@ -12,8 +13,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
+app.use('/api', apiRoutes, swaggerUI.serve, swaggerUI.setup(docs));
 app.use('/', routes);
-app.use('/api', swaggerUI.serve, swaggerUI.setup(docs));
 
 dbConnection();
 

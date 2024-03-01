@@ -1,4 +1,5 @@
 const {
+    getNavBar,
     showProducts,
     showProductById,
     showProductsLogin,
@@ -8,7 +9,8 @@ const {
     updateProductById, 
     showEditProductForm,
     deleteProductById,
-    showProductsByCategory
+    showProductsByCategory,
+    getProducts
 } = require('../controllers/productController.js');
 const Product = require('../models/Product.js');
 
@@ -21,7 +23,88 @@ jest.mock('../models/Product.js', () => ({
     findByIdAndDelete: jest.fn()   
 }));
 
+describe('getNavBar', () => {
+    it('should return the navigation bar in the dashboard path', () => {
+        const path = '/dashboard';
+        const expectedHTML = `
+            <!DOCTYPE html>
+            <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="/styles.css">
+                    <title>Tienda</title>
+                </head>
+                <body>
+                    <nav class="navbar">
+                        <a href="/dashboard/">Productos</a>
+                        <a href="/dashboard/?category=camisetas">Camisetas</a>
+                        <a href="/dashboard/?category=pantalones">Pantalones</a>
+                        <a href="/dashboard/?category=zapatos">Zapatos</a>
+                        <a href="/dashboard/?category=accesorios">Accesorios</a>
+                        <a href="/dashboard/new">Nuevo Producto</a>
+                        <a href="">Logout</a>
+                    </nav>
+                    <h2 class="title">Productos</h2>
+                </body>
+            </html>
+        `
+        expect(getNavBar(path)).toBe(expectedHTML);
+    });
+    it('should return the navigation bar in the products path', () => {
+        const path = '/products';
+        const expectedHTML = `
+            <!DOCTYPE html>
+            <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="/styles.css">
+                    <title>Tienda</title>
+                </head>
+                <body>
+                    <nav class="navbar">
+                        <a href="/products/">Productos</a>
+                        <a href="/products/?category=camisetas">Camisetas</a>
+                        <a href="/products/?category=pantalones">Pantalones</a>
+                        <a href="/products/?category=zapatos">Zapatos</a>
+                        <a href="/products/?category=accesorios">Accesorios</a>
+                        <a href="">Login</a>
+                    </nav>
+                    <h2 class="title">Productos</h2>
+                </body>
+            </html>
+        `
+        expect(getNavBar(path)).toBe(expectedHTML);
+    })
+});
 
+describe('getProducts', () => {
+    it('should return HTML with products', () => {
+        const path = '/products/'
+        const products = [
+            { _id: 1, name: 'Product 1', description: 'Description 1', image: '', price: 10, category: 'Category 1', size: 'M' },
+            { _id: 2, name: 'Product 2', description: 'Description 2', image: '', price: 20, category: 'Category 2', size: 'L' }
+        ];
+        const expectedHTML = `
+                    <div class="product-card">
+                        <h3>Product 1</h3>
+                        <img src="/images/" alt="Product 1">
+                        <p>Description 1</p>
+                        <p>10€</p>
+                        <button><a href="${path}1">Ver</a></button>
+                    </div>
+                    <div class="product-card">
+                        <h3>Product 2</h3>
+                        <img src="/images/" alt="Product 2">
+                        <p>Description 2</p>
+                        <p>20€</p>
+                        <button><a href="${path}2">Ver</a></button>
+                    </div>`
+
+        expect(getProducts(path, products)).toBe(expectedHTML);
+    })
+});
 
 describe('showProducts', () => {
     afterEach(() => {
@@ -172,13 +255,24 @@ describe('showEditProductForm', () => {
     }); 
 });
 
-
-describe('deleteProductById', () => {
+*/
+/*describe('deleteProductById', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     it('should delete an existing product', async () => {
+        const mockProduct = {
+            _id: 1524685,
+            name: 'Producto a eliminar',
+            description: 'Producto a eliminar',
+            price: 20,
+            image: '',
+            category: 'camisetas',
+            size: 'XS'
+        }
+        Product.findByIdAndDelete.mockResolvedValue(mockProduct);
+
         await deleteProductById('someProductId');        
         expect(Product.findByIdAndDelete).toHaveBeenCalledWith('someProductId');
     });

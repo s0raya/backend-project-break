@@ -7,7 +7,7 @@ module.exports = {
                     _id:{
                         type:'objectId',
                         description:"product identification number",
-                        example:"65dd112872bd462a50cfcfac"
+                        example:"65e2216f98e0072b80e25113"
                     },
                     name:{
                         type: 'string',
@@ -47,12 +47,12 @@ module.exports = {
                     name:{
                         type: 'string',
                         description:'Product name',
-                        example:'Pantalones molones',
+                        example:'Camiseta molona',
                     },
                     description:{
                         type:'string',
                         description: 'Product description',
-                        example:'Camiseta molona',
+                        example:'Camiseta para cualquier dia',
                     },
                     image:{
                         type: 'string',
