@@ -93,7 +93,7 @@ module.exports = {
                 }
             }
         },
-        "/dashboard/:productId":{
+        "/dashboard/{productId}":{
             get:{
                 tags: ["Shop"],
                 summary: "Get product by id",
