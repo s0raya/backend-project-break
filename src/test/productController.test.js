@@ -1,5 +1,6 @@
 const {
     getNavBar,
+    getProducts,
     showProducts,
     showProductById,
     showProductsLogin,
@@ -10,13 +11,11 @@ const {
     showEditProductForm,
     deleteProductById,
     showProductsByCategory,
-    getProducts
 } = require('../controllers/productController.js');
 const Product = require('../models/Product.js');
 
 jest.mock('../models/Product.js', () => ({
     find: jest.fn(),
-    send: jest.fn(),
     findById: jest.fn(),
     create: jest.fn(),
     findByIdAndUpdate: jest.fn(),
@@ -83,8 +82,24 @@ describe('getProducts', () => {
     it('should return HTML with products', () => {
         const path = '/products/'
         const products = [
-            { _id: 1, name: 'Product 1', description: 'Description 1', image: '', price: 10, category: 'Category 1', size: 'M' },
-            { _id: 2, name: 'Product 2', description: 'Description 2', image: '', price: 20, category: 'Category 2', size: 'L' }
+            { 
+                _id: 1, 
+                name: 'Product 1', 
+                description: 'Description 1', 
+                image: '', 
+                price: 10, 
+                category: 'Category 1', 
+                size: 'M' 
+            },
+            { 
+                _id: 2, 
+                name: 'Product 2', 
+                description: 'Description 2', 
+                image: '', 
+                price: 20, 
+                category: 'Category 2', 
+                size: 'L' 
+            }
         ];
         const expectedHTML = `
                     <div class="product-card">
@@ -113,22 +128,60 @@ describe('showProducts', () => {
 
     it('should return HTML with products', async () => {
         const mockProducts = [
-            { name: "camiseta", description: "camiseta con logo", price: 15, image:"", category: "camisetas", size: "M"},
-            { name: "pantalones", description: "pantalones rotos", price: 30, image:"", category: "pantalones", size: "L"}
+            { 
+                _id: 1, 
+                name: "camiseta", 
+                description: "camiseta con logo", 
+                price: 15, image:"", 
+                category: "camisetas", 
+                size: "M"
+            },
+            { 
+                _id: 2, 
+                name: "pantalones", 
+                description: "pantalones rotos", 
+                price: 30, 
+                image:"", 
+                category: "pantalones", 
+                size: "L"
+            }
         ];
-
         Product.find.mockResolvedValue(mockProducts);
-       
-        /*const result = await showProducts();        
-        expect(Product.find).toHaveBeenCalledTimes(1);      
-        expect(result).toContain("camiseta");
-        expect(result).toContain("pantalones");*/
+
+        const req = { path: '/dashboard'};
+        const res = { 
+            send: jest.fn()
+        };
+
+        await showProducts(req, res);
+        // Verificar que Product.find fué llamado
+        expect(Product.find).toHaveBeenCalled();
+
+        // Verificar el HTML
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<h2 class="title">Productos</h2>'))
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('camiseta'))
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('pantalones'))
     });
 
     it('should throw an error if the product does not exist', async () => {
-        Product.find.mockRejectedValue('Error getting products');
-        /*await expect(showProducts()).rejects.toMatch('Error getting products');
-        expect(Product.find).toHaveBeenCalledTimes(1);*/
+        const mockError = new Error('Error getting products')
+        Product.find.mockRejectedValue(mockError);
+
+        const mockReq = { path: '/dashboard'};
+        const mockRes = {
+            send: jest.fn(),
+            status: jest.fn().mockReturnThis()
+        }
+        
+        await showProducts(mockReq, mockRes);
+        
+        // Verificar que Product.find fué llamado 
+        expect(Product.find).toHaveBeenCalled();
+        expect(Product.find).rejects.toThrow('Error getting products')
+        // Verificar que el status es 500
+        expect(mockRes.status).toHaveBeenCalledWith(500);
+        // Verificar que nos devuelve el mensaje de error
+        expect(mockRes.send).toHaveBeenCalledWith({ message: 'There was a problem trying get all products'})
     });    
 });
 
@@ -137,71 +190,144 @@ describe('showProductById', () => {
         jest.clearAllMocks();
     });
     it('should return HTML with the specified product by ID', async () =>{ 
-        const mockProducts = {name: "camiseta", description: "camiseta con logo", price: 15, image:"", category: "camisetas", size: "M"};
-        Product.findById.mockResolvedValue(mockProducts)
-        /*const result = await showProductById('someProductId');
-        expect(Product.findById).toHaveBeenCalledWith('someProductId')
-        expect(result).toContain("camiseta");*/
-    });
-    it('should throw an error if the product does not exist', async ()=> {
-        Product.findById.mockResolvedValue(null);
-       /* await expect(showProductById('nonExistentId')).rejects.toThrow('Product not found')
-        expect(Product.findById).toHaveBeenCalledWith('nonExistentId');*/
-    });
-});
+        const mockProduct = { 
+            _id: 1, 
+            name: "camiseta", 
+            description: "camiseta con logo", 
+            price: 15, 
+            image:"", 
+            category: "camisetas", 
+            size: "M"
+        };
 
-describe('showProductsLogin', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-    it('should return HTML with products', async () => {
-        const mockProducts = [
-            { name: "camiseta", description: "camiseta con logo", price: 15, image:"", category: "camisetas", size: "M"},
-            { name: "pantalones", description: "pantalones rotos", price: 30, image:"", category: "pantalones", size: "L"}
-        ];
+        Product.findById.mockResolvedValue(mockProduct);
 
-        Product.find.mockResolvedValue(mockProducts);
-       
-        /*const result = await showProducts();        
-        expect(Product.find).toHaveBeenCalledTimes(1);      
-        expect(result).toContain("camiseta");
-        expect(result).toContain("pantalones");*/
-    });
+        const req = { 
+            path: '/dashboard',
+            params: {
+                id: 2
+            }
+        };
+        const res = { 
+            send: jest.fn()
+        };
 
+        await showProductById(req, res);
+
+        // Verificar que Product.find fué llamado
+        expect(Product.findById).toHaveBeenCalled();
+
+        // Verificar el HTML
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<h2 class="title">Productos</h2>'))
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('camiseta'));
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining(mockProduct.name));
+
+    });
     it('should throw an error if the product does not exist', async () => {
-        Product.find.mockRejectedValue('Error getting products');
-        /*await expect(showProducts()).rejects.toMatch('Error getting products');
-        expect(Product.find).toHaveBeenCalledTimes(1);*/
-    });    
+        Product.findById.mockResolvedValue(null);
+
+        const mockReq = { 
+            params: {
+                id: 'undefined'
+            }
+        };
+        const mockRes = { 
+            send: jest.fn(),
+            status: jest.fn().mockReturnThis()
+        };
+
+        await showProductById(mockReq, mockRes);
+
+        expect(mockRes.status).toHaveBeenCalledWith(404);
+        expect(mockRes.send).toHaveBeenCalledWith({message: 'Product not found'});
+
+    });
+    it('should throw an error if there are a problem with server', async ()=> {
+        const mockError = new Error('Error getting the product by id')
+        Product.findById.mockRejectedValue(mockError);
+
+        const mockReq = { 
+            path: '/dashboard',
+            params: {
+                id: 'undefined'
+            }
+        };
+        const mockRes = {
+            send: jest.fn(),
+            status: jest.fn().mockReturnThis()
+        }
+        
+        await showProductById(mockReq, mockRes);
+        
+        // Verificar que Product.find fué llamado 
+        expect(Product.findById).toHaveBeenCalled();
+        expect(Product.findById).rejects.toThrow('Error getting the product by id')
+        // Verificar que el status es 500
+        expect(mockRes.status).toHaveBeenCalledWith(500);
+        // Verificar que nos devuelve el mensaje de error
+        expect(mockRes.send).toHaveBeenCalledWith({ message: 'Error getting the product.'})
+    });  
 });
 
-describe('showProductByIdLogin', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-    it('should return HTML with the specified product by ID', async () =>{ 
-        const mockProducts = {name: "camiseta", description: "camiseta con logo", price: 15, image:"", category: "camisetas", size: "M"};
-        Product.findById.mockResolvedValue(mockProducts)
-        /*const result = await showProductById('someProductId');
-        expect(Product.findById).toHaveBeenCalledWith('someProductId')
-        expect(result).toContain("camiseta");*/
-    });
-    it('should throw an error if the product does not exist', async ()=> {
-        Product.findById.mockResolvedValue(null);
-       /* await expect(showProductById('nonExistentId')).rejects.toThrow('Product not found')
-        expect(Product.findById).toHaveBeenCalledWith('nonExistentId');*/
-    });
-}); 
 
-/*describe('showNewProductForm', () => {
+describe('showNewProductForm', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
     it('should return HTML for the new product form', async () => {
-        const result = await showNewProductForm();
-        expect(result).toContain(`<label for="name">Nombre:</label>`);
-        expect(result).toContain(`<label for="description">Descripción:</label>`);
-        expect(result).toContain(`<label for="price">Precio:</label>`);
+        const expectedHTML = `
+            <div class="new-product">
+                <h2>Crear producto</h2>
+                <div class="form">
+                    <form action="/dashboard/" method="post">
+                        <div>
+                            <label for="name">Nombre: *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div>
+                            <label for="description">Descripción: *</label>
+                            <textarea id="description" name="description" required></textarea>
+                        </div>
+                        <div>
+                            <label for="price">Precio: *</label>
+                            <input type="number" id="price" name="price" step=".01" required>
+                        </div>
+                        <div>
+                            <label for="image">Imagen:</label>
+                            <input type="file" id="image" name="image" accept=".webp, .jpg, .jpeg">
+                        </div>
+                        <div>
+                            <label for="category">Categoría: *</label>
+                            <select name="category" id="category">
+                                <option value="camisetas">Camisetas</option>
+                                <option value="pantalones">Pantalones</option>
+                                <option value="zapatos">Zapatos</option>
+                                <option value="accesorios">Accesorios</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="size">Talla: *</label>
+                            <select name="size" id="size">
+                                <option value="XS">XS</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                            </select>
+                        </div>
+                        <button type="submit">Crear</button>
+                    </form>
+                </div>
+            </div>
+        `
+        const req = { path: '/dashboard' };
+        const res = { send: jest.fn()};
+
+        const result = await showNewProductForm(req, res);
+
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<h2 class="title">Productos</h2>'))
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining(expectedHTML))
+
     });
     it('should throw an error if the new product form does not exist', async () => {
 
@@ -214,12 +340,76 @@ describe('createProduct', () => {
     });
 
     it('should create a new product', async () => {
-        const newMockProduct = {name: "nuevo producto", description: "descripción del nuevo producto", price: 20, image:"", category: "categoría del nuevo producto", size: "M"};
+        const newMockProduct = {
+            name: "nuevo producto", 
+            description: "descripción del nuevo producto", 
+            price: 20, 
+            image:"", 
+            category: "camisetas", 
+            size: "M"
+        };
+        const createdProduct = { _id: 5, ...newMockProduct }
+        Product.create.mockResolvedValue(createdProduct);
 
-        await createProduct(newMockProduct);
+        const req = {
+            path: '/dashboard',
+            body: newMockProduct
+        };
+        const res = {
+            send: jest.fn()
+        };
+    
+        await createProduct(req,res);
         
         expect(Product.create).toHaveBeenCalledWith(newMockProduct);
+        //expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<h2>Crear producto</h2>'));
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<p>descripción del nuevo producto</p>'));
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<p>20€</p>'));
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<p>Categoria: camisetas</p>'));
+        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<p>Talla: M</p>'));
     });
+    it('should throw an error if any field is empty', async () => {
+        const mockReq = {
+            body: {
+                name: 'Camiseta',
+                price: 20,
+                category: 'camisetas',
+                size: 'M'
+            }
+        };
+        
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn()
+        };
+
+        await createProduct(mockReq, mockRes);
+
+        expect(mockRes.status).toHaveBeenCalledWith(400);
+        expect(mockRes.send).toHaveBeenCalledWith({ message: 'All fields marked with * are required'})
+
+    })
+
+    it('should throw an error if there are a problem with server', async () => {
+        const mockError = new Error('Error creating product')
+        Product.create.mockRejectedValue(mockError);
+
+        const mockReq = { 
+            path: '/dashboard',
+            body: {}
+        };
+        const mockRes = {
+            send: jest.fn(),
+            status: jest.fn().mockReturnThis()
+        }
+        
+        await createProduct(mockReq, mockRes);
+        
+        expect(mockRes.status).toHaveBeenCalledWith(500);
+
+        // Verificar que nos devuelve el mensaje de error
+        expect(mockRes.send).toHaveBeenCalledWith({ message: 'There was a problem trying to create a product'})
+    });  
 });
 
 
@@ -228,42 +418,91 @@ describe('updateProductById', () => {
         jest.clearAllMocks();
     });
     it('should update an existing product', async () => {
-        const updatedMockProduct = {name: "producto actualizado", description: "descripción actualizada", price: 25, image:"", category: "categoría actualizada", size: "L"};
-        await updateProductById('someProductId', updatedMockProduct);
-        expect(Product.findByIdAndUpdate).toHaveBeenCalledWith('someProductId', updatedMockProduct, {new: true});
+        const updatedMockProduct = {
+            id: 5,
+            name: "producto actualizado", 
+            description: "descripción actualizada", 
+            price: 25, 
+            image:"", 
+            category: "categoría actualizada", 
+            size: "L"
+        };
+
+        Product.findByIdAndUpdate.mockResolvedValue(updatedMockProduct)
+
+        const mockReq = {
+            body: {
+                name: "producto actualizado", 
+                description: "descripción actualizada", 
+                price: 25, 
+                image:"", 
+                category: "categoría actualizada", 
+                size: "L" 
+            },
+            params: {
+                productId: 5
+            },
+            path: '/dashboard'
+        };
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn()
+        }
+
+        await updateProductById(mockReq, mockRes);
+        expect(Product.findByIdAndUpdate).toHaveBeenCalledWith(5, {...mockReq.body}, { new: true});
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('<a href="/dashboard/" class="backProducts" id="backProducts">Volver</a>'));
     });
+
+    it('should throw an error if id is empty', async () => {
+        const mockReq = {
+            body: {},
+            params: {},
+            path: '/dashboard'
+        };
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn()
+        };
+
+        await updateProductById(mockReq, mockRes);
+        expect(mockRes.status).toHaveBeenCalledWith(404);
+        expect(mockRes.send).toHaveBeenCalledWith({message: 'Product not found'})
+    });
+
+    it('should throw an error if there are a problem with server', async () => {
+        const mockError = new Error('Error creating product')
+        Product.findByIdAndUpdate.mockRejectedValue(mockError);
+
+        const mockReq = { 
+            path: '/dashboard',
+            body: {},
+            params: {
+                productId: 5
+            }
+        };
+        const mockRes = {
+            send: jest.fn(),
+            status: jest.fn().mockReturnThis()
+        }
+        
+        await updateProductById(mockReq, mockRes);
+        
+        expect(mockRes.status).toHaveBeenCalledWith(500);
+        expect(mockRes.send).toHaveBeenCalledWith({ message: "There was a problem trying to update the product" })
+    });  
 });
 
-describe('showEditProductForm', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-    it('should return HTML for the edit product form', async () => {
-        const mockProduct = { 
-            name: "producto a editar", description: "descripción del producto a editar", price: 30, image:"", category: "categoría del producto a editar", size: "XL"}; 
-        Product.find.mockResolvedValue(mockProduct);
-        const result = await showEditProductForm('someProductId');
-        expect(Product.find).toHaveBeenCalledWith('someProductId')
-        expect(result).toContain(`<label for="name">Nombre:</label>`);
-        expect(result).toContain(`<label for="description">Descripción:</label>`);
-        expect(result).toContain(`<label for="price">Precio:</label>`);        
-    });
-    it('should throw an error if the product does not exist', async () => {
-        Product.find.mockRejectedValue(null);
-        await expect(showEditProductForm('nonExistentId')).rejects.toThrow('Product not exist');
-        expect(Product.find).toHaveBeenCalledWith('nonExistentId');
-    }); 
-});
 
-*/
-/*describe('deleteProductById', () => {
+describe('deleteProductById', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     it('should delete an existing product', async () => {
         const mockProduct = {
-            _id: 1524685,
+            _id: 1,
             name: 'Producto a eliminar',
             description: 'Producto a eliminar',
             price: 20,
@@ -273,7 +512,41 @@ describe('showEditProductForm', () => {
         }
         Product.findByIdAndDelete.mockResolvedValue(mockProduct);
 
-        await deleteProductById('someProductId');        
-        expect(Product.findByIdAndDelete).toHaveBeenCalledWith('someProductId');
+        const mockReq = {
+            params: {
+                productId: 1
+            },
+            path: '/dashboard'
+        };
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn()
+        }
+
+        await deleteProductById(mockReq, mockRes);        
+        expect(Product.findByIdAndDelete).toHaveBeenCalledWith(1);
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('Product deleted'))
     });
-});*/
+
+    it('should throw an error during deletion', async () => {
+        const mockError = new Error('Error deleting product')
+        Product.findByIdAndDelete.mockRejectedValue(mockError);
+
+        const mockReq = {
+            params: {
+                productId: 1
+            },
+            path: '/dashboard'
+        };
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn()
+        };
+
+        await deleteProductById(mockReq,mockRes);
+        expect(Product.findByIdAndDelete).toHaveBeenCalledWith(1);
+        expect(mockRes.status).toHaveBeenCalledWith(500);
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('There was a problem trying to delete a product' ));
+    })
+});

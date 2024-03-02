@@ -109,7 +109,6 @@ const showProducts = async (req,res) => {
         const products = await Product.find();
         res.send(getNavBar(path) + getProducts(path, products));
     } catch (error) {
-        console.log(error);
         res.status(500).send({ message: 'There was a problem trying get all products'})
     }
 };
@@ -123,7 +122,6 @@ const showProductById = async (req,res) => {
         }
         res.send(getNavBar(path) + getProduct(path, product));
     } catch (error) {
-        console.log(error);
         res.status(500).send({ message: 'Error getting the product.'})
     }
 };
@@ -134,7 +132,6 @@ const showProductsLogin = async (req,res) => {
         const products = await Product.find();
         res.send(getNavBar(path) + getProducts(path, products));
     } catch (error) {
-        console.log(error);
         res.status(500).send({ message: 'There was a problem trying get all products'})
     }
 };
@@ -148,7 +145,6 @@ const showProductByIdLogin = async (req,res) => {
         }
         res.send(getNavBar(path) + getProduct(path, product));
     } catch (error) {
-        console.log(error);
         res.status(500).send({message: 'Error getting the product'});
     }
 };
@@ -203,7 +199,6 @@ const showNewProductForm = async (req,res) => {
             </div>
         `)
     } catch (error) {
-        console.log(error);
         res.status(500).send({ message: "There was a problem trying to create a product" });
     }
     
@@ -213,7 +208,7 @@ const createProduct = async (req,res) => {
     try {
         const { name, description, price, image, category, size } = req.body;
         if(!name || !description || !price|| !category|| !size ) {
-            throw new Error('All fields marked with * are required')
+            res.status(400).send( { message: 'All fields marked with * are required'})
         }
         const product = await Product.create({ name, description, price, image, category, size });
         const path = req.path;
@@ -224,7 +219,6 @@ const createProduct = async (req,res) => {
             <button><a href="${path}${product._id}/delete">Borrar</a></button>
         `)
     } catch (error) {
-        console.log(error);
         res.status(500).send({ message: "There was a problem trying to create a product" });
     }
 };
@@ -245,7 +239,6 @@ const updateProductById = async (req, res) => {
             <button><a href="${path}/delete">Borrar</a></button>
             `)
     } catch (error) {
-       console.log(error) 
        res.status(500).send({ message: "There was a problem trying to update the product" });
     }
 };
@@ -301,7 +294,6 @@ const showEditProductForm = async (req, res) => {
             </div>
         `);
     } catch (error) {
-        console.log("Find product by id: ", error);
         res.status(500).send({ message: "There was a problem trying to find the product for editing" });
     }
 };
@@ -310,12 +302,8 @@ const deleteProductById = async (req,res) => {
     const path = req.path.includes('/dashboard') ? '/dashboard' : '';
     try {
         const product = await Product.findByIdAndDelete(req.params.productId);
-        if(!product) {
-            return res.status(404).send({message: 'Product not found'})
-        }
         res.send(getNavBar(path) + 'Product deleted');
     } catch (error) {
-        console.log(error);
         res.status(500).send(getNavBar(path) + 'There was a problem trying to delete a product')
     }
 };
@@ -333,7 +321,6 @@ const showProductsByCategory = async (req, res) => {
         }
         res.send(getNavBar(path, category) + getProducts(path, products)); 
     } catch (error) {
-        console.log(error);
         res.status(500).send({ message: "Error when filtering products"});
     }
 };
