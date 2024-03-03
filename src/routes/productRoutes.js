@@ -20,5 +20,10 @@ router.post('/dashboard/', productController.createProduct);
 router.put('/dashboard/:productId', productController.updateProductById);
 router.get('/dashboard/:productId/edit', productController.showEditProductForm);
 router.get('/dashboard/:productId/delete', productController.deleteProductById);
+router.get('/register', productController.createUser);
+router.post('/register', productController.saveUser);
+router.get('/login', productController.loginUserform);
+router.post('/login', productController.loginUser);
+router.post('/logout', productController.logout);
 
 module.exports = router;
