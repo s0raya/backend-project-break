@@ -1,5 +1,5 @@
 const Product = require('../models/Product');
-const app = require('../config/firebase');
+
 
 //Funcion para obtener la barra de navegación, teniendo en cuenta la ruta.
 const getNavBar = (path) => {
@@ -54,9 +54,6 @@ const getNavBar = (path) => {
     }
     return html;
 };
- 
-
-
 
 //Funcion para pintar por pantalla todos los productos, teniendo en cuenta la ruta.
 const getProducts = (path, products) => {
@@ -105,66 +102,6 @@ const getProduct = (path, product) => {
     return html;
 };
 
-
-const createUser = () => {
-    let html = '';
-    html = `<!DOCTYPE html>
-    <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="/styles.css">
-            <title>Tienda</title>
-        </head>
-        <body>
-              <div class ="register">
-
-                <form action="/register" method="post" class="form-register">
-                    <h1>Registrarse</h1>
-                    <label for="username">Email:</label>
-                    <input type="text" id="username" name="username" required>
-                    <label for="password">Contraseña:<label>
-                    <input type="password" id="password" name="password" required>
-                    <button type="submit">Crear</button>
-                    <button>Ir a pagina principal</button>
-                </form> 
-            </div> 
-        </body>      
-        </html>      
-        `        
-    return html;
-}
-
-const loginUserform = async(req,res) => {
-    try {
-        res.send(`<!DOCTYPE html>
-        <html lang="es">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link rel="stylesheet" href="/styles.css">
-                <title>Tienda</title>
-            </head>
-            <body>
-                <div class ="register">
-
-                    <form action="/Login" method="get" class="form-Login">
-                        <h1>Identificarse</h1>
-                        <label for="username">Email:</label>
-                        <input type="text" id="username" name="username" required>
-                        <label for="password">Contraseña:<label>
-                        <input type="password" id="password" name="password" required>
-                        <button>Acceder</button>
-                        <button>Ir a pagina principal</button>
-                    </form> 
-                </div> 
-            </body>      
-        </html>
-        `)
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 const showProducts = async (req,res) => {
     try {
@@ -388,49 +325,6 @@ const showProductsByCategory = async (req, res) => {
     }
 };
 
-// Funcion para guardar el usuario registrado
-const saveUser = async (req,res) => {
-    try {
-        const { username, email, password} = req.body;
-        app.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            let username = userCredential.user;
-            console.log(username);
-            res.redirect('/dashboard');
-        })
-        .catch((error) => {
-            let errorCode = error.code;
-            let errorMessage = error.message;
-            console.log(error);
-        })
-        
-    } catch (err) {
-        res.redirect('/register');
-    };
-}
-
-const loginUser = async(req,res) => {
-    const {email, password} = req.body;
-    app.auth().signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-        let user = userCredential.user;
-    })
-    .catch((error) => {
-        let errorCode = error.code;
-        let errorMessage = error.message;
-    });
-    res.redirect('/dashboard')
-}
-
-const logout = (req,res) => {
-    firebase.auth().signOut().then(() => {
-        res.redirect('/products');
-    })
-    .catch(error => {
-        console.log(error);
-    })
-};
-
 module.exports = {
     getNavBar,
     getProducts,
@@ -443,10 +337,5 @@ module.exports = {
     updateProductById, 
     showEditProductForm,
     deleteProductById,
-    showProductsByCategory,
-    loginUserform,
-    loginUser,
-    createUser,
-    logout,
-    saveUser
+    showProductsByCategory
 }; 

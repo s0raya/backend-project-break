@@ -5,12 +5,12 @@ const firebase = require('firebase/app');
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCrDT-zNBB-GHpuOFngU8GmJbARIne4ogA",
-  authDomain: "backend-project-break.firebaseapp.com",
-  projectId: "backend-project-break",
-  storageBucket: "backend-project-break.appspot.com",
-  messagingSenderId: "6049101173",
-  appId: "1:6049101173:web:26a258a1a25d4927478f3c"
+  apiKey: process.env.FB_APIKEY,
+  authDomain: process.env.FB_DOMAIN,
+  projectId: process.env.FB_PROJECTID,
+  storageBucket: process.env.FB_STORAGEBUCKET,
+  messagingSenderId: process.env.FB_SENDERID,
+  appId: process.env.FB_APPID
 };
 
 // Initialize Firebase

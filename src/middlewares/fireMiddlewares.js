@@ -1,9 +1,6 @@
-const session = require('express-session');
-require('dotenv').config();
-
 const checkSession =  (req, res, next) => {
-    if(req.session.username && req.session){
-        return next()
+    if(req.session.user && req.session){
+        next()
     }else{
         res.redirect('/login');
     }

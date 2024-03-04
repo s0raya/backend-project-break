@@ -3,14 +3,10 @@ const {
     getProducts,
     showProducts,
     showProductById,
-    showProductsLogin,
-    showProductByIdLogin,
     showNewProductForm, 
     createProduct,
     updateProductById, 
-    showEditProductForm,
     deleteProductById,
-    showProductsByCategory,
 } = require('../controllers/productController.js');
 const Product = require('../models/Product.js');
 
