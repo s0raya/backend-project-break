@@ -1,5 +1,5 @@
 const app = require('../config/firebase');
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} = require('firebase/auth');
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} = require('firebase/auth');
 const auth = getAuth(app);
 
 const authController = {
@@ -70,10 +70,10 @@ const authController = {
             res.redirect('/dashboard/');
         })
         .catch((error) => {
-            console.log(error);
             const errorCode = error.code;
             const errorMessage = error.message;
             res.redirect('/register/');
+            return;
         })
     },
 
@@ -88,11 +88,12 @@ const authController = {
         .catch((error) => {
             let errorCode = error.code;
             let errorMessage = error.message;
-            res.redirect('/login/')
+            res.redirect('/login/');
+            return;
         });     
     },
     logout(req,res) {
-        auth.signOut();
+        signOut(auth)
         res.redirect('/products/');
     }
 }

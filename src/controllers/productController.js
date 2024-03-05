@@ -139,7 +139,6 @@ const showProductsLogin = async (req,res) => {
 const showProductByIdLogin = async (req,res) => {
     try {
         const path = req.path.includes('/dashboard') ? '/dashboard/' : '';
-        console.log(path);
         const product = await Product.findById(req.params.productId);
         if (!product) {
             return res.status(404).send({message: 'Product not found'})

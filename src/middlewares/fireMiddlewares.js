@@ -5,10 +5,7 @@ const auth = getAuth(app)
 function checkSession(req,res,next) {
     onAuthStateChanged(auth, (user) => {
         if(user) {
-            req.user = user;
             next();
-        } else {
-            res.redirect('/login/');
         }
     })
 }
