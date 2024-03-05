@@ -58,7 +58,7 @@ const getNavBar = (path) => {
 //Funcion para pintar por pantalla todos los productos, teniendo en cuenta la ruta.
 const getProducts = (path, products) => {
     let html = '';
-    for (let product of products) {        
+    for (let product of products) {   
                 html += `
                     <div class="product-card">
                         <h3>${product.name}</h3>
@@ -139,6 +139,7 @@ const showProductsLogin = async (req,res) => {
 const showProductByIdLogin = async (req,res) => {
     try {
         const path = req.path.includes('/dashboard') ? '/dashboard/' : '';
+        console.log(path);
         const product = await Product.findById(req.params.productId);
         if (!product) {
             return res.status(404).send({message: 'Product not found'})
@@ -235,8 +236,6 @@ const updateProductById = async (req, res) => {
         res.send(`
             ${getNavBar(path) + getProduct(path, updatedProduct)}
             <a href="/dashboard/" class="backProducts" id="backProducts">Volver</a>
-            <button><a href="${path}/edit">Editar</a></button>
-            <button><a href="${path}/delete">Borrar</a></button>
             `)
     } catch (error) {
        res.status(500).send({ message: "There was a problem trying to update the product" });

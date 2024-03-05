@@ -1,5 +1,5 @@
 const app = require('../config/firebase');
-const {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} = require('firebase/auth');
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} = require('firebase/auth');
 const auth = getAuth(app);
 
 const authController = {
@@ -19,8 +19,8 @@ const authController = {
                     <div class ="register">
                         <form action="/register" id="register" method="post" class="form-register">
                             <h1>Registrarse</h1>
-                            <label for="user">Email:</label>
-                            <input type="email" id="user" name="user" required>
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
                             <label for="password">Contraseña:<label>
                             <input type="password" id="password" name="password" required>
                         </form> 
@@ -46,8 +46,8 @@ const authController = {
                     <div class ="register">
                         <form action="/login" id="login" method="post" class="form-Login">
                             <h1>Identificarse</h1>
-                            <label for="user">Email:</label>
-                            <input type="email" id="user" name="user">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email">
                             <label for="password">Contraseña:<label>
                             <input type="password" id="password" name="password">   
                         </form> 
@@ -62,43 +62,38 @@ const authController = {
             `)
     },
     // Funcion para guardar el usuario registrado
-    async saveUser(req,res) {
-        try {
-            const { user, password} = req.body;
-            console.log(req.body);
-            auth().createUserWithEmailAndPassword(user, password)
-            .then((userCredential) => {
-                let user = userCredential.user;
-                console.log(user);
-                res.redirect('/dashboard');
-            })
-            .catch((error) => {
-                let errorCode = error.code;
-                let errorMessage = error.message;
-                console.log(error);
-            })
-            
-        } catch (err) {
-            res.redirect('/register');
-        };
+    saveUser(req,res) {
+        const { email, password} = req.body;
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            res.redirect('/dashboard/');
+        })
+        .catch((error) => {
+            console.log(error);
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            res.redirect('/register/');
+        })
     },
 
-    async loginUser(req,res) {
+    loginUser(req,res) {
         const {email, password} = req.body;
-        app.auth().signInWithEmailAndPassword(email, password)
+        signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            let user = userCredential.user;
+            const user = userCredential.user;
+            const uid = user.uid;
+            res.redirect('/dashboard/')
         })
         .catch((error) => {
             let errorCode = error.code;
             let errorMessage = error.message;
-        });
-        res.redirect('/dashboard')
+            res.redirect('/login/')
+        });     
     },
-
-    async logout(req,res) {
-        await firebase.auth().signOut()
-        res.redirect('/products');
+    logout(req,res) {
+        auth.signOut();
+        res.redirect('/products/');
     }
 }
 
