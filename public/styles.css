@@ -44,20 +44,45 @@ table {
 
 /*************************************************************************/
 
+
+body{
+	background-color: rgb(216, 202, 202);
+}
 img {
 	width: 20%;
 	height: 70%;
 }
-button {
-	background-color: #4CAF5;
-	color: black;
-}
+.buttons {	
+		min-width: 80px;
+		height: 40px;
+		padding: 5px 10px;
+		font-weight: bold;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		position: relative;
+		display: inline-block;
+		outline: none;
+		border-radius: 5px;
+		border: none;
+		background-size: 120% auto;
+		background-image: linear-gradient(315deg, #4ecdc4 0%, #c797eb 75%);
+		font-family: cursive;
+	  }
+
+	  .buttons:hover {
+		background-position: right center;
+	  }
+	  .buttons:active {
+		top: 2px;
+	  }
+
 .navbar {
-	background-color: aqua;
+	
 	display: flex;
 	justify-content: space-around;
+	background: rgb(175,141,198);
+	background: linear-gradient(90deg, rgba(175,141,198,1) 0%, rgba(215,129,129,1) 50%, rgba(244,188,111,0.4962359943977591) 100%);
 	
-
 }
 
 .title{
@@ -71,9 +96,13 @@ a {
 	text-decoration: none;
 	font-family: cursive;
 	margin: 15px;
+	color:rgb(235, 221, 221);
+}
+h3{
+	font-size: 20px;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
 	
 }
-
 p {
 	
 	font-size: large;
@@ -91,4 +120,18 @@ p {
 	
 }
 
-
+.container-register {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 100px;
+	padding: 40px;
+	gap:40px;
+	text-align: center;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+h1{
+	margin: 40px;
+	font-size: 45px;
+	font-family: cursive;
+}

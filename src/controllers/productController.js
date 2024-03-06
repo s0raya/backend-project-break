@@ -65,7 +65,7 @@ const getProducts = (path, products) => {
                         <img src="/images/${product.image}" alt="${product.name}">
                         <p>${product.description}</p>
                         <p>${product.price}€</p>
-                        <button><a href="${path}${product._id}">Ver</a></button>
+                        <button class="buttons"><a href="${path}${product._id}">Ver</a></button>
                     </div>`;        
     }
     return html;
@@ -83,8 +83,8 @@ const getProduct = (path, product) => {
                 <p>${product.price}€</p>
                 <p>Categoria: ${product.category}</p>
                 <p>Talla: ${product.size}</p>
-                <button><a href="${path}${product._id}/edit">Editar</a></button>
-                <button><a href="${path}${product._id}/delete">Borrar</a></button>
+                <button class="buttons"><a href="${path}${product._id}/edit">Editar</a></button>
+                <button class="buttons"><a href="${path}${product._id}/delete">Borrar</a></button>
             </div>
         `
     } else {

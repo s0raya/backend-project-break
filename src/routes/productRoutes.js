@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController.js');
 const methodOverride = require('method-override');
-const checkSession = require('../middlewares/fireMiddlewares.js')
+const checkSession = require('../middlewares/authMiddlewares.js')
 
 router.use(methodOverride('_method'));
 //Redireccion a /products
