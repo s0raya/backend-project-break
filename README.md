@@ -1,220 +1,151 @@
 # Tienda de ropa
-
-Vamos a montar una tienda de ropa con un catálogo de productos y un dashboard para el administrador. Los productos se guardarán en una base de datos de mongo en Atlas. Podemos usar como referencia el pdf [web_ejemplo.pdf](web_ejemplo.pdf) que contiene un ejemplo de cómo podría ser la interfaz de la tienda y el dashboard.
-
-## Índice
-
-  - [Estructura de archivos](#estructura-de-archivos)
-  - [Creación de base de datos](#creación-de-base-de-datos)
-  - [Creación del servidor](#creación-del-servidor)
-  - [Creación de modelos](#creación-de-modelos)
-  - [Creación de rutas](#creación-de-rutas)
-  - [Creación de controladores](#creación-de-controladores)
-  - [Despliegue](#despliegue)
-  - [Documentación](#documentación)
-  - [Bonus 1 - Tests](#bonus-1---tests)
-  - [Bonus 2 - Autenticación con Firebase](#bonus-2---autenticación-con-firebase)
-  - [Bonus 3 - API y documentación con Swagger](#bonus-3---api-y-documentación-con-swagger)
-  - [Recursos](#recursos)
+Esta es una aplicación en Node.js utilizando Express con mongoose para crear una tienda de ropa con un catálogo de productos y un dashboard para el administrador. Los productos se guardarán en una base de datos de mongo en Atlas.
 
 ## Estructura de archivos
 
-Vamos a crear la estructura de archivos que vamos a necesitar para el proyecto. 
+La aplicación 'Tienda de ropa' posee la siguiente estructura de archivos en su proyecto backend. 
 
-```
-.
 ├── src
 │   ├── config
-│   │   ├── db.js
-│   │   └── firebase.js (BONUS)
+│   │   ├── config.js
+│   │   ├── db.js 
+│   │   └── firebase.js
 │   ├── controllers
-│   │   ├── productController.js
-│   │   └──authController.js (BONUS)
+│   │   ├── apiController.js
+│   │   ├── authController.js 
+│   │   └── productController.js
+│   ├── docs.js
+│   │   ├── basicInfo.js
+│   │   ├── components.js
+│   │   ├── index.js
+│   │   └── products.js
+│   ├── middlewares 
+│   │   └── fireMiddleware.js
 │   ├── models
 │   │   └── Product.js
 │   ├── routes
+│   │   ├── apiRoutes.js
+│   │   ├── authRoutes.js
 │   │   └── productRoutes.js
-│   │   └── authRoutes.js (BONUS)
-│   ├── middlewares (BONUS)
-│   │   └── authMiddleware.js
-│   └── index.js
-├── test (BONUS)
-│   └── productController.test.js
+│   ├── index.js
+│   └── test 
+│       └── productController.test.js
 ├── public
 │   ├── styles.css
-│   └── images (OPCIONAL)
+│   └── images 
 ├── .env
 └── package.json
 
-```
 
 ### Características de los archivos
 
-- `config/db.js`: Archivo que contendrá la configuración de la base de datos. Deberá conectarse a la base de datos de mongo en Atlas.
-- `controllers/productController.js`: Archivo que contendrá la lógica para manejar las solicitudes CRUD de los productos. Devolverá las respuestas en formato HTML.
-- `models/Product.js`: Archivo que contendrá la definición del esquema del producto utilizando Mongoose.
-- `routes/productRoutes.js`: Archivo que contendrá la definición de las rutas CRUD para los productos. Este llama a los métodos del controlador.
-- `index.js`: Archivo principal que iniciará el servidor Express. Importa las rutas y las usa. También tiene que estar configurado para servir archivos estáticos y para leer el body de las peticiones de formularios.
-- `public/styles.css`: Archivo que contendrá los estilos de la aplicación (recomendable).
-- `public/images`: Carpeta que contendrá las imágenes de los productos (opcional).Se puede evitar si se usan urls externas para las imágenes.
-- `.env`: Archivo que contendrá las variables de entorno. En este caso, la uri de la base de datos de Atlas o el puerto de la aplicación. Más adelante añadiremos más variables de entorno, como la palabra secreta para la sesión.
+
+- `config/config.js`: Archivo que contiene la configuración de crypto y bcrypt, para crear encriptaciones y realizar la funcion de hash de estas. 
+- `config/db.js`: Archivo que contiene la configuración de la base de datos, y por el que se conecta a esta, a través de mongo en Atlas.
+- `config/firebase.js`: Archivo que contiene la configuración de firebase. Inicia la conexión con firebase.
+
+- `controllers/apiController.js`: Archivo que contiene la lógica para manejar las solicitudes CRUD de los productos. Devuelve las respuestas en formato json.
+- `controllers/authController.js`: Archivo que contiene la lógica para manejar la autenticación de usuario y la realización del registro, login y logout.
+- `controllers/productController.js`: Archivo que contiene la lógica para manejar las solicitudes CRUD de los productos. Devuelve las respuestas en formato HTML.
+
+- `docs/basicInfo.js`: Archivo en el que se encuentra información básica de la Api para la documentación visualizada gracias a Swagger.
+- `docs/components.js`: Archivo donde se encuentran los componentes reutilizables para la documentación visualizada gracias a Swagger. 
+- `docs/index.js`: Lugar en el que se encuentran los archivos importados y desde el que exportaremos la documentación posteriormente visualizada gracias a Swagger.
+- `docs/products.js`: Archivo que contiene los endpoints para la navegación,  funcionamiento y visualización dentro de la especificación de open Api.
+
+- `middlewares/fireMiddleware.js`: Archivo que contiene el middleware para comprobar si el usuario está autenticado. Este busca la sesión del usuario y, si no la encuentra, redirige al formulario de login utilizando Firebase.
+
+
+- `models/Product.js`: Archivo que contiene la definición del esquema del producto utilizando Mongoose.
+
+
+- `routes/apiRoutes.js`: Archivo que contiene la definición de las rutas para la Api Rest. Este llama a los métodos del controlador apiController.js.
+- `routes/authRoutes.js`: Archivo que contiene la definición de las rutas de autenticación de usuario en sesión. Este llama a los metodos del controlador authController.js.
+- `routes/productRoutes.js`: Archivo que contiene la definición de las rutas CRUD para los productos. Este llama a los métodos del controlador productController.js.
+
+
+- `index.js`: Archivo principal que inicia el servidor Express. Importa las rutas y las usa. También está configurado para servir archivos estáticos y para leer el body de las peticiones de formularios.
+
+
+- `test/productController.test.js`: Archivo en el que se encuentran todas las pruebas o test del funcionamiento de nuestra aplicación. Algunas de ellas usando 'Mock functions' o funciones simuladas.
+
+
+
+- `public/styles.css`: Archivo que contiene los estilos de la aplicación.
+- `public/images`: Carpeta que contiene las imágenes de los productos.
+
+
+- `.env`: Archivo que contiene las variables de entorno. Contiene la uri de la base de datos de Atlas conjunta para los dos usuarios, el puerto de la aplicación y la palabra secreta para la sesión.
+
+
 - `package.json`: Archivo que contendrá las dependencias del proyecto. Crearemos un script para iniciar el servidor con node y otro para iniciar el servidor con nodemon.("start": "node src/index.js", "dev": "nodemon src/index.js").
 
-**BONUS**
-- `config/firebase.js`: Archivo que contendrá la configuración de firebase. Deberá inicializar la conexión con firebase.
-- `controllers/authController.js`: Archivo que contendrá la lógica para manejar las solicitudes de autenticación. Devolverá las respuestas en formato HTML.
-- `routes/authRoutes.js`: Archivo que contendrá la definición de las rutas para la autenticación. Este llama a los métodos del controlador.
-- `middlewares/authMiddleware.js`: Archivo que contendrá el middleware para comprobar si el usuario está autenticado. Este buscará la sesión del usuario y, si no la encuentra, redirigirá al formulario de login.
-
-## Creacíon de base de datos
-
-Vamos a crear la base de datos en Atlas. Creamos un nuevo proyecto y lo desplegamos.
-
-Una vez creada la base de datos, copiamos la uri y la guardamos en el archivo .env 
-```
-MONGO_URI=<uri_bd_atlas>
-```
-
-## Creación del servidor
-
-Vamos a crear el servidor con express. El servidor devolverá las vistas usando template literals. Para interfaces más complejas, se podría usar un motor de plantillas como pug. También necesitaremos leer el body de las peticiones tipo post. Como trabajaremos con formularios html, necesitaremos el middleware `express.urlencoded` para leer el body de las peticiones.
-
-Para poder añadir estilos, imágenes, etc. necesitaremos el middleware `express.static` para servir archivos estáticos. En nuestro caso, serviremos los archivos estáticos desde la carpeta `public`.
-
-El puerto en el que escuchará el servidor lo cargaremos desde el archivo .env usando `dotenv`.
-
-
-Creamos el archivo `index.js` en la carpeta `src` y añadimos el código necesario para crear el servidor. 
-
-## Creación de modelo
-
-Vamos a crear el modelo de producto. El modelo de producto tendrá los siguientes campos:
-
-- Nombre
-- Descripción
-- Imagen
-- Categoría
-- Talla
-- Precio
-
-La categoría será un string que podrá ser "Camisetas", "Pantalones", "Zapatos", "Accesorios".
-
-La talla será un string que podrá ser "XS", "S", "M", "L", "XL".
-
-
-## Creación de rutas
-
-Vamos a crear las rutas CRUD para los productos. Al usar formularios html, las rutas serán de tipo GET y POST.
- Las rutas deberían tener una estructura similar a esta:
-
-- GET /products: Devuelve todos los productos. Cada producto tendrá un enlace a su página de detalle.
-- GET /products/:productId: Devuelve el detalle de un producto.
-- GET /dashboard: Devuelve el dashboard del administrador. En el dashboard aparecerán todos los artículos que se hayan subido. Si clickamos en uno de ellos nos llevará a su página para poder actualizarlo o eliminarlo.
-- GET /dashboard/new: Devuelve el formulario para subir un artículo nuevo.
-- POST /dashboard: Crea un nuevo producto.
-- GET /dashboard/:productId: Devuelve el detalle de un producto en el dashboard.
-- GET /dashboard/:productId/edit: Devuelve el formulario para editar un producto.
-- PUT /dashboard/:productId: Actualiza un producto.
-- DELETE /dashboard/:productId/delete: Elimina un producto.
-
-## Creación de controladores
-
-A continuación crearemos el controlador de productos. Este controlador se dedicará a manejar las solicitudes CRUD de los productos. Devolverá las respuestas en formato HTML.
-Para ello, crearemos algunas funciones auxiliares que nos ayudarán a devolver las vistas con SSR.
-
-Las funciones principales del controlador serán:
-
-- showProducts: Devuelve la vista con todos los productos.
-- showProductById: Devuelve la vista con el detalle de un producto.
-- showNewProduct: Devuelve la vista con el formulario para subir un artículo nuevo.
-- createProduct: Crea un nuevo producto. Una vez creado, redirige a la vista de detalle del producto o a la vista de todos los productos del dashboard.
-- showEditProduct: Devuelve la vista con el formulario para editar un producto.
-- updateProduct: Actualiza un producto. Una vez actualizado, redirige a la vista de detalle del producto o a la vista de todos los productos del dashboard.
-- deleteProduct: Elimina un producto. Una vez eliminado, redirige a la vista de todos los productos del dashboard.
-
-Las funciones showProducts y showProductById pueden devolver respuestas ligeramente distintas si se llega desde el dashboard o desde la vista principal. Por ejemplo, si se llega desde el dashboard, se mostrará un enlace para editar o eliminar el producto. Para ello podemos utilizar la url de la petición o pasar al controlador un parámetro extra que indique si se llega desde el dashboard o no.
-
-Para generar el html de forma más eficiente y sacarlo de la lógica, podemos crear funciones y variables auxiliares que generen el html de los productos y del formulario.
-Por ejemplo:
-- baseHtml: html común a todas las páginas. Puede contener elementos como la importación de estilos, etc.
-- getNavBar: Genera la barra de navegación con las categorías. En caso de estar en el dashboard, también generará un enlace para subir un nuevo producto.
-- getProductCards: Genera el html de los productos. Recibe un array de productos y devuelve el html de las tarjetas de los productos.
-- ...
-
-Un ejemplo de una función para generar el html de los productos podría ser:
-
-```javascript
-function getProductCards(products) {
-  let html = '';
-  for (let product of products) {
-    html += `
-      <div class="product-card">
-        <img src="${product.image}" alt="${product.name}">
-        <h2>${product.name}</h2>
-        <p>${product.description}</p>
-        <p>${product.price}€</p>
-        <a href="/products/${product._id}">Ver detalle</a>
-      </div>
-    `;
-  }
-  return html;
-}
-```
-
-Con estas funciones auxiliares, el controlador será más limpio y fácil de entender.
-Ejemplo:
-
-```javascript
-
-const showProducts = async (req, res) => {
-  const products = await Product.find();
-  const productCards = getProductCards(products);
-  const html = baseHtml + getNavBar() + productCards;
-  res.send(html);
-};
-    
-```
-
-## Despliegue
-
-Creamos un nuevo proyecto en fl0 y desplegamos el proyecto desde github. Recordad añadir las variables de entorno en fl0. Si no aparece el repositorio en fl0, tendremos que modificar los permisos de fl0 para que pueda acceder al repositorio.
-
-## Documentación
-
-Crearemos un archivo `README.md` que contenga la documentación del proyecto. En este readme explicaremos cómo poner en marcha la aplicación, las tecnologías que hemos usado, endpoints, etc.
-
-## Bonus 1 - Tests
-
-Para poder comprobar que el controlador de productos funciona correctamente, vamos a crear tests para las funciones. Para ello, necesitaremos instalar el paquete `jest` y crear el archivo `productController.test.js` en la carpeta `test`. En este archivo, importaremos el controlador y crearemos los tests. Podemos hacer tests tanto para las funciones que devuelven html como para las funciones que crean, actualizan o eliminan productos.
-
-## Bonus 2 - API y documentación con Swagger
-
-Para poder usar la aplicación con un frontend en React, vamos a crear una API que haga las mismas operaciones que el controlador de productos, pero que devuelva los datos en formato JSON. Documentaremos la API con Swagger, para que sea más fácil de entender y usar.
-
-## Bonus 3 - Autenticación con Firebase
-
-Vamos a crear un login y pass para el administrador con firebase. Para ello, necesitaremos instalar los paquetes `firebase` y `express-session` y configurar el proyecto en firebase. Podemos ver la guía de cómo hacerlo en el pdf [firebase.pdf](firebase.pdf).
-
-Una vez configurado el proyecto en firebase, podremos crear un formulario de login. Este formulario enviará las credenciales a un endpoint que comprobará si son correctas. Si son correctas, redirigirá al dashboard. Si no, mostrará un mensaje de error. También tendremos una página de registro, a la que se podrá acceder desde el formulario de login. Además, tendremos que crear un archivo `firebase.js` que inicialice la conexión con firebase y que contenga las funciones para comprobar si las credenciales son correctas y para cerrar la sesión.
-
-Para comprobar si las credenciales son correctas, necesitaremos el middleware `express-session` para guardar la sesión del usuario. Tendremos que modificar el archivo index.js para que inicialice el middleware y lo use en las rutas del dashboard. También tendremos que añadir una palabra secreta para la sesión en el archivo .env y crear un archivo `middlewares/authMiddleware.js` que contenga el middleware para comprobar si el usuario está autenticado. Este buscará la sesión del usuario y, si no la encuentra, redirigirá al formulario de login.
 
 
 
-## Recursos
+## Endpoints de la App
 
-- [Express](https://expressjs.com/)
-- [Mongoose](https://mongoosejs.com/)
-- [Atlas](https://www.mongodb.com/cloud/atlas)
-- [Fl0](https://fl0.io/)
-- [dotenv](https://www.npmjs.com/package/dotenv)
-- [express-session](https://www.npmjs.com/package/express-session)
-- [express.urlencoded](https://expressjs.com/en/api.html#express.urlencoded)
-- [express.static](https://expressjs.com/en/api.html#express.static)
-- [Template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
-- [Pug](https://pugjs.org/api/getting-started.html)
-- [Firebase](https://firebase.google.com/)
-  - [Firebase Auth](https://firebase.google.com/docs/auth)
-  - [Get Started with Firebase Authentication on Websites](https://firebase.google.com/docs/auth/web/start)
+La aplicación 'Tienda de ropa' contiene diferentes rutas según sea para el uso del cliente comprador o ya sea para el uso del administrador/es de la app.
+
+#### - Para el uso del cliente, los endpoints a los cuales puede acceder son:
+
+- `router.get('/products/', productController.showProducts)`: Devuelve todos los productos. Cada uno de ellos dispone de un enlace a su página de detalle.
+- `router.get('/products/:productId', productController.showProductById)`: Devuelve el detalle de un producto concreto.
+
+##### Además, el backend dispone de un rutado especifico, el cual devuelve los datos en formato json.
+
+- `router.get('/products', apiController.showProductsApi)`: Devuelve todos los productos. Cada uno de ellos dispone de un enlace a su página de detalle.
+- `router.get('/products/:productId', apiController.showProductByIdApi)`: Devuelve el detalle de un producto concreto.
+
+#### - Para el uso del administrador.
+
+La aplicación 'Tienda de ropa' esta especialmente pensada para el uso en el backend de los administradores de esta. Por ello dispone de un sistema de autenticación, la encriptacion y el hash realizado por crypto y bcrypt, mientras que el middleware de sesión autenticada comprobada gracias a la configuración del proyecto en `firebase`. 
+
+- `router.get('/login/',authController.loginUserform)`: Devuelve el formulario para realizar el login al usuario/administrador. La respuesta devuelta viene en formato HTML. Desde aqui tambien podemos acceder a crear un alta como usuario/administrador. 
+- `router.post('/login/', authController.loginUser)`: Envia el email y el password aportado por el usuario/administrador, lo autentica y si las credenciales son correctas redirecciona al dashboard de productos de administrador, sino redirecciona de nuevo a login.
+
+- `router.get('/register/', authController.createUser)`: Devuelve el formulario para realizar la creacion de usuario. La respuesta devuelta viene en formato HTML.
+
+- `router.post('/register/', authController.saveUser)`: Guarda la autenticacion mediante email y contraseña del usuario creado y lo redirecciona al dashboard de productos de administrador.
+
+- `router.get('/logout', authController.logout)`: Cierra sesión de usuario autenticada y redirecciona a la pagina principal.
+
+##### Una vez el administrador ha sido autenticado los endpoints a los que puede acceder son:
+
+- `router.get('/dashboard/', productController.showProductsLogin)`: Devuelve todos los productos. Cada uno de ellos dispone de un enlace a su página de detalle. 
+- `router.get('/dashboard/:productId', productController.showProductByIdLogin)`: Devuelve el detalle de un producto concreto.
+- `router.get('/dashboard/new', productController.showNewProductForm);`: Devuelve el formulario para la creación de un nuevo producto.
+- `router.get('/dashboard/:productId/edit',productController.showEditProductForm)`: Devuelve el formulario para la edición de un producto concreto.
+- `router.get('/dashboard/:productId/delete',productController.deleteProductById)`: Elimina un producto y devuelve un mensaje.
 
 
+##### Como en la parte del cliente, el backend dispone de un rutado especifico, cuyas respuestas vienen entregadas en formato json.
+
+- `router.post('/dashboard', apiController.createProductApi)`: Crea un nuevo producto y nos envía un mensaje de confirmación.
+- `router.put('/dashboard/:productId', apiController.updateProductByIdApi)`: Modifica y actualiza un producto. También nos devuelve un mensaje de confirmación.
+- `router.get('/dashboard/:productId/delete', apiController.deleteProductByIdApi)`: Elimina un producto y nos devuelve un mensaje de confirmación.
+
+
+## Funcionamiento de la aplicación
+
+La aplicación 'Tienda de ropa' esta desarrollada en Node.js. Para ello se han utilizado varias dependencias que explicaremos a continuación.
+
+-`express`: Es el entorno de trabajo en el que se ha desarrollado la app y por el cual se ha lanzado un servidor el cual está escuchando por variable de entorno en:  http://localhost:${PORT};
+
+-`express-session`: Es un middleware que almacena los datos de sesión en el servidor.
+
+-`mongoose`: Es una librería de Node.js que nos permite realizar consultas y peticiones a bases de datos alojadas en MongoDB Atlas.
+
+-`dotenv`: Es un módulo de dependencia cero que carga las variables de entorno desde un archivo, en nuestro caso, la clave para entrar en MongoDB, la clave o palabra secreta usada como autenticación.
+
+-`crypto`: Herramienta que permite encriptar y desencriptar String en Node.js.
+
+-`bcrypt`: Bcrypt es una función de hash de contraseñas y derivación de claves para contraseñas basada en el cifrado Blowfish.
+
+-`swagger`: Es una infraestructura de visualización que puede analizar la especificación OpenAPI y generar una consola de API para que los usuarios puedan aprender y ejecutar las API REST de forma rápida y sencilla. En nuestro caso solo se ejecutarán las rutas "api".
+
+-`jest`: Es una biblioteca de Node.js para crear, ejecutar y estructurar pruebas o test. En nuestro caso se han realizado los test a las funciones de la aplicación.
+
+-`fl0`: Aunque no es una dependencia utilizamos el implementador de aplicaciones backend y bases de datos llamado `fl0` en el cual hemos creado nuestro proyecto y lo hemos desplegado.
+
+-`firebase`: Es una solución creada por Google para el desarrollo de aplicaciones y mejora de partes de estas. En nuestro caso hemos desarrollado la autenticación del usuario/administrador.

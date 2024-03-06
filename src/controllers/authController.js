@@ -43,6 +43,7 @@ const authController = {
                     <title>Tienda</title>
                 </head>
                 <body>
+                <div class="container-register">
                     <div class ="register">
                         <form action="/login" id="login" method="post" class="form-Login">
                             <h1>Identificarse</h1>
@@ -52,11 +53,12 @@ const authController = {
                             <input type="password" id="password" name="password">   
                         </form> 
                     </div>
-                    <div class="buttons">
-                        <button type="submit" form="login">Acceder</button>
-                        <a href="/register"><button>Registrarse</button></a>
-                        <a href="/products"><button>Volver</button></a>
+                    <div class="buttons-register">
+                        <button type="submit" form="login" class="buttons">Acceder</button>
+                        <a href="/register"><button class="buttons">Registrarse</button></a>
+                        <a href="/products"><button class="buttons">Volver</button></a>
                     </div>
+                </div>    
                 </body>      
             </html>
             `)
