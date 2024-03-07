@@ -60,13 +60,15 @@ const getProducts = (path, products) => {
     let html = '';
     for (let product of products) {   
                 html += `
+                <div class="cards">
                     <div class="product-card">
                         <h3>${product.name}</h3>
                         <img src="/images/${product.image}" alt="${product.name}">
                         <p>${product.description}</p>
                         <p>${product.price}€</p>
                         <button class="buttons"><a href="${path}${product._id}">Ver</a></button>
-                    </div>`;        
+                    </div>
+                </div>    `;        
     }
     return html;
 };
@@ -76,6 +78,7 @@ const getProduct = (path, product) => {
     let html = '';
     if(path === '/dashboard'  || path === '/dashboard/') {
         html += `
+        <div class="cards">
             <div class="product-details">
                 <h2>${product.name}</h2>
                 <img src="/images/${product.image}" alt="${product.name}">
@@ -86,9 +89,11 @@ const getProduct = (path, product) => {
                 <button class="buttons"><a href="${path}${product._id}/edit">Editar</a></button>
                 <button class="buttons"><a href="${path}${product._id}/delete">Borrar</a></button>
             </div>
+        </div>    
         `
     } else {
         html += `
+        <div class="cards">
             <div class="product-details">
                 <h2>${product.name}</h2>
                 <img src="/images/${product.image}" alt="${product.name}">
@@ -97,6 +102,7 @@ const getProduct = (path, product) => {
                 <p>Categoria: ${product.category}</p>
                 <p>Talla: ${product.size}</p>
             </div>
+        </div>    
         `
     }
     return html;
@@ -158,23 +164,23 @@ const showNewProductForm = async (req,res) => {
                 <h2>Crear producto</h2>
                 <div class="form">
                     <form action="/dashboard/" method="post">
-                        <div>
+                        <div class="form-group">
                             <label for="name">Nombre: *</label>
                             <input type="text" id="name" name="name" required>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="description">Descripción: *</label>
                             <textarea id="description" name="description" required></textarea>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="price">Precio: *</label>
                             <input type="number" id="price" name="price" step=".01" required>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="image">Imagen:</label>
                             <input type="file" id="image" name="image" accept=".webp, .jpg, .jpeg">
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="category">Categoría: *</label>
                             <select name="category" id="category">
                                 <option value="camisetas">Camisetas</option>
@@ -183,7 +189,7 @@ const showNewProductForm = async (req,res) => {
                                 <option value="accesorios">Accesorios</option>
                             </select>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="size">Talla: *</label>
                             <select name="size" id="size">
                                 <option value="XS">XS</option>
@@ -193,7 +199,7 @@ const showNewProductForm = async (req,res) => {
                                 <option value="XL">XL</option>
                             </select>
                         </div>
-                        <button type="submit">Crear</button>
+                        <button type="submit" class="button-form">Crear</button>
                     </form>
                 </div>
             </div>
@@ -251,23 +257,23 @@ const showEditProductForm = async (req, res) => {
                 <h2>Editar producto</h2>
                 <div class="form">
                     <form action="/dashboard/${product._id}?_method=PUT" method="post">
-                        <div>
+                        <div class="form-group">
                             <label for="name">Nombre:</label>
                             <input type="text" id="name" name="name" value="${product.name}" required>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="description">Descripción:</label>
                             <textarea id="description" name="description" required>${product.description}</textarea>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="price">Precio:</label>
                             <input type="number" id="price" name="price" value="${product.price}" required>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="image">Imagen:</label>
                             <input type="text" id="image" name="image" value="${product.image}">
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="category">Categoría:</label>
                             <select name="category" id="category">
                                 <option value="camisetas" ${product.category === 'camisetas' ? 'selected' : ''}>Camisetas</option>
@@ -276,7 +282,7 @@ const showEditProductForm = async (req, res) => {
                                 <option value="accesorios" ${product.category === 'accesorios' ? 'selected' : ''}>Accesorios</option>
                             </select>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <label for="size">Talla:</label>
                             <select name="size" id="size">
                                 <option value="XS" ${product.size === 'XS' ? 'selected' : ''}>XS</option>
@@ -286,7 +292,7 @@ const showEditProductForm = async (req, res) => {
                                 <option value="XL" ${product.size === 'XL' ? 'selected' : ''}>XL</option>
                             </select>
                         </div>
-                        <button type="submit">Actualizar</button>
+                        <button type="submit" class="button-form">Actualizar</button>
                     </form>
                 </div>
             </div>
