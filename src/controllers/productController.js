@@ -16,13 +16,15 @@ const getNavBar = (path) => {
                 </head>
                 <body>
                     <nav class="navbar">
-                        <a href="/dashboard/">Productos</a>
-                        <a href="/dashboard/?category=camisetas">Camisetas</a>
-                        <a href="/dashboard/?category=pantalones">Pantalones</a>
-                        <a href="/dashboard/?category=zapatos">Zapatos</a>
-                        <a href="/dashboard/?category=accesorios">Accesorios</a>
-                        <a href="/dashboard/new">Nuevo Producto</a>
-                        <a href="/logout">Logout</a>
+                        <ul>
+                            <li><a href="/dashboard/">Productos</a></li>
+                            <li><a href="/dashboard/?category=camisetas">Camisetas</a></li>
+                            <li><a href="/dashboard/?category=pantalones">Pantalones</a></li>
+                            <li><a href="/dashboard/?category=zapatos">Zapatos</a></li>
+                            <li><a href="/dashboard/?category=accesorios">Accesorios</a></li>
+                            <li><a href="/dashboard/new">Nuevo Producto</a></li>
+                            <li><a href="/logout">Logout</a>
+                        </ul>
                     </nav>
                     <h2 class="title">Productos</h2>
                 </body>
@@ -40,12 +42,14 @@ const getNavBar = (path) => {
                 </head>
                 <body>
                     <nav class="navbar">
-                        <a href="/products/">Productos</a>
-                        <a href="/products/?category=camisetas">Camisetas</a>
-                        <a href="/products/?category=pantalones">Pantalones</a>
-                        <a href="/products/?category=zapatos">Zapatos</a>
-                        <a href="/products/?category=accesorios">Accesorios</a>
-                        <a href="/login">Login</a>
+                        <ul>
+                            <li><a href="/products/">Productos</a></li>
+                            <li><a href="/products/?category=camisetas">Camisetas</a></li>
+                            <li><a href="/products/?category=pantalones">Pantalones</a></li>
+                            <li><a href="/products/?category=zapatos">Zapatos</a></li>
+                            <li><a href="/products/?category=accesorios">Accesorios</a></li>
+                            <li><a href="/login">Login</a>
+                        </ul>
                     </nav>
                     <h2 class="title">Productos</h2>
                 </body>
@@ -57,19 +61,19 @@ const getNavBar = (path) => {
 
 //Funcion para pintar por pantalla todos los productos, teniendo en cuenta la ruta.
 const getProducts = (path, products) => {
-    let html = '';
+    let html = '<ul class="products-list">';
     for (let product of products) {   
                 html += `
-                <div class="cards">
-                    <div class="product-card">
+                    <li class="product-card">
                         <h3>${product.name}</h3>
                         <img src="/images/${product.image}" alt="${product.name}">
                         <p>${product.description}</p>
                         <p>${product.price}€</p>
-                        <button class="buttons"><a href="${path}${product._id}">Ver</a></button>
-                    </div>
-                </div>    `;        
+                        <a href="${path}${product._id}"><button class="buttons">Ver</button></a>
+                    </li>
+                `;        
     }
+    html += '</ul>';
     return html;
 };
 
@@ -86,8 +90,10 @@ const getProduct = (path, product) => {
                 <p>${product.price}€</p>
                 <p>Categoria: ${product.category}</p>
                 <p>Talla: ${product.size}</p>
-                <button class="buttons"><a href="${path}${product._id}/edit">Editar</a></button>
-                <button class="buttons"><a href="${path}${product._id}/delete">Borrar</a></button>
+                <div>
+                    <a href="${path}${product._id}/edit"><button class="buttons">Editar</button></a>
+                    <a href="${path}${product._id}/delete"><button class="buttons">Borrar</button></a>
+                </div>
             </div>
         </div>    
         `
@@ -101,6 +107,7 @@ const getProduct = (path, product) => {
                 <p>${product.price}€</p>
                 <p>Categoria: ${product.category}</p>
                 <p>Talla: ${product.size}</p>
+                <a href="/products/"><button class="buttons">Volver</button></a>
             </div>
         </div>    
         `
@@ -165,15 +172,15 @@ const showNewProductForm = async (req,res) => {
                 <div class="form">
                     <form action="/dashboard/" method="post">
                         <div class="form-group">
-                            <label for="name">Nombre: *</label>
+                            <label for="name">Nombre:*</label>
                             <input type="text" id="name" name="name" required>
                         </div>
                         <div class="form-group">
-                            <label for="description">Descripción: *</label>
+                            <label for="description">Descripción:*</label>
                             <textarea id="description" name="description" required></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="price">Precio: *</label>
+                            <label for="price">Precio:*</label>
                             <input type="number" id="price" name="price" step=".01" required>
                         </div>
                         <div class="form-group">
@@ -181,7 +188,7 @@ const showNewProductForm = async (req,res) => {
                             <input type="file" id="image" name="image" accept=".webp, .jpg, .jpeg">
                         </div>
                         <div class="form-group">
-                            <label for="category">Categoría: *</label>
+                            <label for="category">Categoría:*</label>
                             <select name="category" id="category">
                                 <option value="camisetas">Camisetas</option>
                                 <option value="pantalones">Pantalones</option>
@@ -190,7 +197,7 @@ const showNewProductForm = async (req,res) => {
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="size">Talla: *</label>
+                            <label for="size">Talla:*</label>
                             <select name="size" id="size">
                                 <option value="XS">XS</option>
                                 <option value="S">S</option>

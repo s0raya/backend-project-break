@@ -19,7 +19,6 @@
     "firebase": "10.8.1",
     "method-override": "3.0.0",
     "mongoose": "8.2.0",
-    "swagger-ui-dist": "5.11.8",
     "swagger-ui-express": "5.0.0"
   },
   "devDependencies": {

@@ -18,11 +18,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
     session({
         secret: hashedSecret,
+        name: 'Shop',
         resave: false,
         saveUninitialized: true,
         cookie: {secure: false}
     })
 );
+
 app.use(express.static('public'));
 
 app.use('/api', apiRoutes, swaggerUI.serve, swaggerUI.setup(docs));

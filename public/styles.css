@@ -49,40 +49,58 @@ body{
 	background-color: rgb(216, 202, 202);
 }
 img {
-	width: 20%;
-	height: 70%;
+	width: 100%;
+	height: 80%;
 }
 .buttons, .button-form {	
-		min-width: 80px;
-		height: 40px;
-		padding: 5px 10px;
-		font-weight: bold;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		position: relative;
-		display: inline-block;
-		outline: none;
-		border-radius: 5px;
-		border: none;
-		background-size: 120% auto;
-		background-image: linear-gradient(315deg, #4ecdc4 0%, #c797eb 75%);
-		font-family: cursive;
-	  }
+	color: white;
+	min-width: 80px;
+	height: 40px;
+	padding: 5px 10px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	position: relative;
+	display: inline-block;
+	outline: none;
+	border-radius: 5px;
+	border: none;
+	background-size: 120% auto;
+	background-image: linear-gradient(315deg, #4ecdc4 0%, #c797eb 75%);
+	font-family: cursive;
+}
 
-	  .buttons, .button-form:hover {
-		background-position: right center;
-	  }
-	  .buttons, .button-form:active {
-		top: 2px;
-	  }
+.buttons, .button-form:hover {
+	background-position: right center;
+}
+.buttons, .button-form:active {
+	top: 2px;
+}
 
 .navbar {
-	
-	display: flex;
-	justify-content: space-around;
 	background: rgb(175,141,198);
 	background: linear-gradient(90deg, rgba(175,141,198,1) 0%, rgba(215,129,129,1) 50%, rgba(244,188,111,0.4962359943977591) 100%);
-	
+	height: 40px;
+}
+
+.navbar ul {
+	display: flex;
+	justify-content: space-around;
+	height: 40px;
+	align-items: center;
+}
+
+.navbar ul>li:hover {
+	display: flex;
+	align-items: center;
+	height: 40px;
+	background-color: white;
+	cursor: pointer;
+}
+
+.navbar ul>li:hover {
+	background-color: white;
+	cursor: pointer;
 }
 
 .title{
@@ -95,7 +113,6 @@ img {
 a {
 	text-decoration: none;
 	font-family: cursive;
-	margin: 15px;
 	color:rgb(235, 221, 221);
 }
 h3{
@@ -109,30 +126,44 @@ p {
 	font-family: cursive;
 }
 
-
+.products-list {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;	
+}
 
 .product-card, .product-details {
 	display: flex;
 	flex-direction: column;	
+	justify-content: center;
 	align-items: center;
+	width: 20%;
 	height: 300px;
 	margin:40px;
 	padding: 20px;
-	gap:20px;
-	
+	gap:12px;
+
 }
 
+.cards {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
 
-.container-register {
+}
+
+.container-register, .register {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	margin: 100px;
 	padding: 40px;
-	gap:40px;
+	gap:20px;
 	text-align: center;
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
+
 h1{
 	margin: 40px;
 	font-size: 45px;
@@ -147,7 +178,12 @@ h1{
 	margin-right: 450px;
 	
 }
-.form{
+
+.form-group label {
+	display: flex;
+}
+
+.form {
 	background: rgba(187,255,250,0.2) url("/images/smiley.png") no-repeat scroll 0 0;
 	border: 1 px solid #757575;
 	border-radius: 20px;
@@ -158,9 +194,15 @@ h2{
 }
 
 .form-group{
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 	margin: 10px;
 }
-.button-form{
+
+.button-form {
 	margin-left: 125px;
 	margin-right: 125px;
 }
+
+

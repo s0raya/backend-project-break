@@ -1,56 +1,41 @@
 const app = require('../config/firebase');
 const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} = require('firebase/auth');
+const { getNavBar } = require('./productController');
 const auth = getAuth(app);
 
 const authController = {
     //Formulario de regitro de usuario
     createUser(req,res) {
-        let html = '';
+        const path = req.path;
         res.send(
-            `<!DOCTYPE html>
-            <html lang="es">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <link rel="stylesheet" href="/styles.css">
-                    <title>Tienda</title>
-                </head>
-                <body>
+            `${getNavBar(path)}
                     <div class ="register">
                         <form action="/register" id="register" method="post" class="form-register">
                             <h1>Registrarse</h1>
                             <label for="email">Email:</label>
                             <input type="email" id="email" name="email" required>
-                            <label for="password">Contraseña:<label>
+                            <label for="password">Contraseña:</label>
                             <input type="password" id="password" name="password" required>
+                            <button type="submit" form="register" class="buttons">Crear</button>
                         </form> 
-                    </div>
-                    <div class="buttons">
-                        <button type="submit" form="register">Crear</button>
-                        <a href="/products"><button>Volver</button></a>
-                    </div>
-                </body>      
-            </html>      
-        `)  
+                        <div>
+                            <a href="/login"><button class="buttons">Volver</button></a>
+                        </div>
+                    </div>  
+            `)  
     },
     loginUserform(req,res) {
-            res.send(`<!DOCTYPE html>
-            <html lang="es">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <link rel="stylesheet" href="/styles.css">
-                    <title>Tienda</title>
-                </head>
-                <body>
+        const path = req.path;
+            res.send(`
+                ${getNavBar(path)}
                 <div class="container-register">
-                    <div class ="register">
-                        <form action="/login" id="login" method="post" class="form-Login">
+                    <div class ="form-login">
+                        <form action="/login" id="login" method="post">
                             <h1>Identificarse</h1>
                             <label for="email">Email:</label>
-                            <input type="email" id="email" name="email">
+                            <input type="email" id="email" name="email" required>
                             <label for="password">Contraseña:<label>
-                            <input type="password" id="password" name="password">   
+                            <input type="password" id="password" name="password" required>   
                         </form> 
                     </div>
                     <div class="buttons-register">
@@ -58,9 +43,7 @@ const authController = {
                         <a href="/register"><button class="buttons">Registrarse</button></a>
                         <a href="/products"><button class="buttons">Volver</button></a>
                     </div>
-                </div>    
-                </body>      
-            </html>
+                </div>
             `)
     },
     // Funcion para guardar el usuario registrado
