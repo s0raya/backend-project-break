@@ -1,6 +1,5 @@
 const express = require('express');
 const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 const dbConnection = require('./config/db.js');
 const routes = require('./routes/productRoutes.js');
@@ -9,22 +8,26 @@ const authRoutes = require('./routes/authRoutes.js')
 const swaggerUI = require('swagger-ui-express');
 const docs = require('./docs/index.js');
 const PORT = process.env.PORT || 8080;
-
 const hashedSecret = require('./config/config.js');
 
+//const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 
 app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-let store = new MongoDBStore({
-    uri: process.env.MONGO_URI,
-    collection:'sessions'
 
-});
-store.on('error', function (err) {
-    console.log('Session Store Error', err);
-});
+/*mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+})*/
+
+const mongoStoreOptions = {
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: 'sessions'
+}
 
 app.use(
     session({
@@ -32,7 +35,7 @@ app.use(
         name: 'Shop',
         resave: false,
         saveUninitialized: true,
-        store: store,
+        store: MongoStore.create(mongoStoreOptions),
         cookie: {secure: false}
     })
 );

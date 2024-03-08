@@ -184,7 +184,7 @@ h1{
 }
 
 .form {
-	background: rgba(187,255,250,0.2) url("/images/smiley.png") no-repeat scroll 0 0;
+	background: rgba(187,255,250,0.2);
 	border: 1 px solid #757575;
 	border-radius: 20px;
 	padding-bottom: 10px;
