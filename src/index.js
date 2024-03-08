@@ -1,4 +1,5 @@
 const express = require('express');
+const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 const dbConnection = require('./config/db.js');
 const routes = require('./routes/productRoutes.js');
@@ -15,12 +16,22 @@ app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+let store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection:'sessions'
+
+});
+store.on('error', function (err) {
+    console.log('Session Store Error', err);
+});
+
 app.use(
     session({
         secret: hashedSecret,
         name: 'Shop',
         resave: false,
         saveUninitialized: true,
+        store: store,
         cookie: {secure: false}
     })
 );
