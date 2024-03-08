@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 const dbConnection = require('./config/db.js');
@@ -8,7 +9,7 @@ const authRoutes = require('./routes/authRoutes.js')
 const swaggerUI = require('swagger-ui-express');
 const docs = require('./docs/index.js');
 const PORT = process.env.PORT || 8080;
-const session = require('express-session');
+
 const hashedSecret = require('./config/config.js');
 
 
