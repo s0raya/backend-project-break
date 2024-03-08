@@ -6,7 +6,7 @@ const apiRoutes = require("./routes/apiRoutes.js");
 const authRoutes = require('./routes/authRoutes.js')
 const swaggerUI = require('swagger-ui-express');
 const docs = require('./docs/index.js');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const session = require('express-session');
 const hashedSecret = require('./config/config.js');
 
