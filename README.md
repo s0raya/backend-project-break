@@ -71,6 +71,7 @@ La aplicación 'Tienda de ropa' posee la siguiente estructura de archivos:
 
 - `getNavBar`: Renderiza la barra de navegación según la ruta proporcionada.
 - `getProducts`: Renderiza una lista de productos.
+- `getProduct`: Renderiza un único producto.
 - `showProducts`: Muestra todos los productos disponibles.
 - `showProductById`: Muestra los detalles de un producto específico por su ID.
 - `showNewProductForm`: Renderiza un formulario para crear un nuevo producto.
@@ -100,7 +101,7 @@ La aplicación 'Tienda de ropa' posee la siguiente estructura de archivos:
 
 La aplicación 'Tienda de ropa' contiene diferentes rutas según sea para el uso del cliente comprador o ya sea para el uso del administrador/es de la app.
 
-#### - Para el uso del cliente, los endpoints a los cuales puede acceder son:
+#### Para el uso del cliente, los endpoints a los cuales puede acceder son:
 
 - `router.get('/')`: Redirecciona a `/products/`.
 - `router.get('/products/', productController.showProducts)`: Devuelve todos los productos. Cada uno de ellos dispone de un enlace a su página de detalle.
@@ -111,7 +112,7 @@ La aplicación 'Tienda de ropa' contiene diferentes rutas según sea para el uso
 - `router.get('/products', apiController.showProductsApi)`: Devuelve todos los productos. Cada uno de ellos dispone de un enlace a su página de detalle.
 - `router.get('/products/:productId', apiController.showProductByIdApi)`: Devuelve el detalle de un producto concreto.
 
-#### - Para el uso del administrador.
+#### Para el uso del administrador.
 
 La aplicación 'Tienda de ropa' esta especialmente pensada para el uso en el backend de los administradores de esta. Por ello dispone de un sistema de autenticación, la encriptacion y el hash realizado por crypto y bcrypt, mientras que el middleware de sesión autenticada comprobada gracias a la configuración del proyecto en `firebase`. 
 
