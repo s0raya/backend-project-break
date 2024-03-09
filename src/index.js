@@ -9,7 +9,6 @@ const swaggerUI = require('swagger-ui-express');
 const docs = require('./docs/index.js');
 const PORT = process.env.PORT || 8080;
 const hashedSecret = require('./config/config.js');
-
 const MongoStore = require('connect-mongo');
 
 app.disable('x-powered-by');
