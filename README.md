@@ -11,11 +11,6 @@ Esta es una aplicación web en Node.js utilizando Express con mongoose para crea
   - [Endpoints de la App](#endpoints-de-la-app)
   - [Funcionamiento de la aplicación](#funcionamiento-de-la-aplicación)
 
-  - [Endpoints de la App](#endpoints-de-la-app)
-  - [Endpoints de la App](#endpoints-de-la-app)
-  - [Endpoints de la App](#endpoints-de-la-app)
-
-
 
 ## Estructura de archivos
 
