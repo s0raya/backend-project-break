@@ -12,7 +12,7 @@ Esta es una aplicación web en **Node.js** utilizando **Express** con **mongoose
 
 ## 📚 Índice
 
-  - [📂 Estructura de archivos](#estructura-de-archivos)
+  - [Estructura de archivos](#estructura-de-archivos)
   - [🛠️ Tecnologías utilizadas](#tecnologías-utilizadas)
   - [🚀 Controladores](#🚀-controladores)
   - [📄 Documentación con Swagger](#📄-documentación-con-swagger)
@@ -40,7 +40,7 @@ Esta es una aplicación web en **Node.js** utilizando **Express** con **mongoose
 - **🧪 Jest** para realizar pruebas unitarias.
 
 
-## 📂 **Estructura de archivos**
+## 📂 **Estructura de archivos** <a id="estructura-de-archivos"></a>
 
 La aplicación 'Tienda de ropa' posee la siguiente estructura de archivos: 
 
