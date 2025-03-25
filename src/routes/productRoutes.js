@@ -5,6 +5,7 @@ const methodOverride = require('method-override');
 const checkSession = require('../middlewares/authMiddlewares.js')
 
 router.use(methodOverride('_method'));
+
 //Redireccion a /products
 router.get('/', (req,res) => {
     res.redirect('/products/');

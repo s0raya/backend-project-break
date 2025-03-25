@@ -26,7 +26,6 @@ const getNavBar = (path) => {
                             <li><a href="/logout">Logout</a>
                         </ul>
                     </nav>
-                    <h2 class="title">Productos</h2>
         `
     } else {
         html = `
@@ -49,15 +48,25 @@ const getNavBar = (path) => {
                             <li><a href="/login">Login</a>
                         </ul>
                     </nav>
-                    <h2 class="title">Productos</h2>
         `
     }
     return html;
 };
 
 //Funcion para pintar por pantalla todos los productos, teniendo en cuenta la ruta.
-const getProducts = (path, products) => {
-    let html = '<ul class="products-list">';
+const getProducts = (path, products, category) => {
+    let html;
+    if(category) {
+        html = `
+            <h2 class="title">${category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+            <ul class="products-list">
+        `;
+    } else {
+        html = `
+            <h2 class="title">Productos</h2>
+            <ul class="products-list">
+        `
+    }
     for (let product of products) {   
                 html += `
                     <li class="product-card">
@@ -145,7 +154,7 @@ const showProducts = async (req,res) => {
         } else {
             products = await Product.find();
         }
-        res.send(getNavBar(path) + getProducts(path, products));
+        res.send(getNavBar(path) + getProducts(path, products, category));
     } catch (error) {
         console.log('error' , error);
         return res.status(500).send({ message: 'There was a problem trying get all products'})
@@ -158,7 +167,7 @@ const showNewProductForm = async (req,res) => {
         res.send(`
         ${getNavBar(path)}
             <div class="new-product">
-                <h2>Crear producto</h2>
+                <h2 class="title">Crear producto</h2>
                 <div class="form">
                     <form action="/dashboard/" method="post">
                         <div class="form-group">
@@ -253,7 +262,7 @@ const showEditProductForm = async (req, res) => {
         res.send(`
             ${getNavBar(path)}
             <div class="edit-product">
-                <h2>Editar producto</h2>
+                <h2 class="title">Editar producto</h2>
                 <div class="form">
                     <form action="/dashboard/${product._id}?_method=PUT" method="post">
                         <div class="form-group">
@@ -319,7 +328,6 @@ module.exports = {
     getProducts,
     showProducts,
     showProductById,
-    //showProductByIdLogin,
     showNewProductForm, 
     createProduct,
     updateProductById, 
