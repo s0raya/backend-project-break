@@ -12,13 +12,23 @@ Esta es una aplicación web en **Node.js** utilizando **Express** con **mongoose
 
 ## 📚 Índice
 
-  - [Estructura de archivos](#estructura-de-archivos)
-  - [Características de los archivos](#características-de-los-archivos)
-  - [Funciones del Controlador de Productos](#funciones-del-controlador-de-productos)
-  - [Funciones del Controlador de la API](#funciones-del-controlador-de-la-api)
-  - [Funciones del Controlador de Autenticación](#funciones-del-controlador-de-autenticación)
-  - [Endpoints de la App](#endpoints-de-la-app)
-  - [Funcionamiento de la aplicación](#funcionamiento-de-la-aplicación)
+  - [📂 Estructura de archivos](#📂-estructura-de-archivos)
+  - [🛠️ Tecnologías utilizadas](#🛠️-tecnologías-utilizadas)
+  - [🚀 Controladores](#🚀-controladores)
+  - [📄 Documentación con Swagger](#📄-documentación-con-swagger)
+  - [🔒 Middlewares](#🔒-middlewares)
+  - [📌 Modelos](#📌-modelos)
+  - [🌐 Rutas](#🌐-rutas)
+  - [🏁 Principal](#🏁-principal)
+  - [🧪 Tests](#🧪-tests)
+  - [🎨 Archivos Estáticos](#🎨-archivos-estáticos)
+  - [🔑 Variables de Entorno](#🔑-variables-de-entorno)
+  - [📦 Dependencias](#📦-dependencias)
+  - [🔥 Endpoints Principales](#🔥-endpoints-principales)
+  - [⚙️ Funcionamiento de la aplicación](#⚙️-funcionamiento-de-la-aplicación)
+  - [⚙️ Cómo Configurar y Usar este Proyecto](#⚙️-cómo-configurar-y-usar-este-proyecto)
+  - [🚀 Mejoras futuras](#🚀-mejoras-futuras)
+
 
 ## 🛠️ **Tecnologías utilizadas**
 
