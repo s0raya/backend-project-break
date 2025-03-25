@@ -14,7 +14,7 @@ Esta es una aplicación web en **Node.js** utilizando **Express** con **mongoose
 
   - [🛠️ Tecnologías utilizadas](#tecnologías-utilizadas)
   - [📂 Estructura de archivos](#estructura-de-archivos)
-  - [🛠 Configuración](#configuración)
+  - [🛠  Configuración](#configuración)
   - [🚀 Controladores](#🚀-controladores)
   - [📄 Documentación con Swagger](#📄-documentación-con-swagger)
   - [🔒 Middlewares](#🔒-middlewares)
@@ -81,7 +81,7 @@ La aplicación 'Tienda de ropa' posee la siguiente estructura de archivos:
 
 ```
 
-### 🛠 Configuración <a id="configuración></a>
+### 🛠 Configuración <a id="configuración"></a>
 - **`config/config.js`**: Genera una clave secreta con `crypto` y la hashea con `bcrypt`.
 - **`config/db.js`**: Configura la conexión a MongoDB mediante Mongoose y `.env`.
 - **`config/firebase.js`**: Inicia la conexión con Firebase para autenticación.
