@@ -14,7 +14,7 @@ Esta es una aplicación web en **Node.js** utilizando **Express** con **mongoose
 
   - [🛠️ Tecnologías utilizadas](#tecnologías-utilizadas)
   - [📂 Estructura de archivos](#estructura-de-archivos)
-  - [🛠 Configuración] (#configuración)
+  - [🛠 Configuración](#configuración)
   - [🚀 Controladores](#🚀-controladores)
   - [📄 Documentación con Swagger](#📄-documentación-con-swagger)
   - [🔒 Middlewares](#🔒-middlewares)
