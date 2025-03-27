@@ -23,8 +23,6 @@ Esta es una aplicación web en **Node.js** utilizando **Express** con **mongoose
   - [🏁 Principal](#principal)
   - [🧪 Tests](#tests)
   - [🎨 Archivos Estáticos](#archivos-estáticos)
-  - [🔑 Variables de Entorno](#variables-de-entorno)
-  - [📦 Dependencias](#dependencias)
   - [🔥 Endpoints Principales](#endpoints-principales)
   - [⚙️ Funcionamiento de la aplicación](#funcionamiento-de-la-aplicación)
   - [⚙️ Cómo Configurar y Usar este Proyecto](#cómo-configurar-y-usar-este-proyecto)
@@ -119,12 +117,6 @@ La aplicación 'Tienda de ropa' posee la siguiente estructura de archivos:
 ### 🎨 Archivos Estáticos <a id="archivos-estáticos"></a>
 - **`public/styles.css`**: Estilos de la aplicación.
 - **`public/images`**: Carpeta con imágenes de productos.
-
-### 🔑 Variables de Entorno <a id="variables-de-entorno"></a>
-- **`.env`**: Contiene la URI de MongoDB, credenciales de Firebase y puerto del servidor.
-
-### 📦 Dependencias <a id="dependencias"></a>
-- **`package.json`**: Lista de dependencias y scripts (`start` y `dev`).
 
 ---
 
