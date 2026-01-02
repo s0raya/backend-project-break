@@ -20,7 +20,7 @@ const apiController = {
             res.json(product);
         }catch (error) {
             console.log(error)
-            res.status(500).json({message:"Error getting the product." + req.params._id})
+            res.status(500).json({message:"Error getting the product: " + req.params.productId})
         }
     },
 
@@ -43,7 +43,7 @@ const apiController = {
             res.status(200).json({ message: "Product successfully updated", updatedProduct});
         } catch (error) {
             console.log(error);
-            res.status(500).json({ message: "There was a problem trying to update a product" + req.params._id });
+            res.status(500).json({ message: "There was a problem trying to update a product " + req.params.productId });
         }
     },
 

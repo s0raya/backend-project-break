@@ -53,7 +53,7 @@ const getNavBar = (path) => {
     return html;
 };
 
-//Funcion para pintar por pantalla todos los productos, teniendo en cuenta la ruta.
+//Funcion para pintar por pantalla todos los productos, teniendo en cuenta si estoy dentro de una categoria.
 const getProducts = (path, products, category) => {
     let html;
     if(category) {

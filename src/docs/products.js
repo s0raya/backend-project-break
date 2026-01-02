@@ -41,7 +41,7 @@ module.exports = {
                 }
             },
         },
-        "/api/products/{_id}":{
+        "/api/products/{productId}":{
             get:{
                 tags: ["Shop"],
                 summary: "Get a product by ID",
@@ -63,7 +63,7 @@ module.exports = {
                         content: {
                             "application/json": {
                                 schema: {
-                                    $ref: "#/components/schemas/Product/properties/_id"
+                                    $ref: "#/components/schemas/Product"
                                 }
                             }
                         }

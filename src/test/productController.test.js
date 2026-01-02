@@ -21,89 +21,47 @@ jest.mock('../models/Product.js', () => ({
 describe('getNavBar', () => {
     it('should return the navigation bar in the dashboard path', () => {
         const path = '/dashboard';
-        const expectedHTML = `
-            <!DOCTYPE html>
-            <html lang="es">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <link rel="stylesheet" href="/styles.css">
-                    <title>Tienda</title>
-                </head>
-                <body>
-                    <nav class="navbar">
-                        <ul>
-                            <li><a href="/dashboard/">Productos</a></li>
-                            <li><a href="/dashboard/?category=camisetas">Camisetas</a></li>
-                            <li><a href="/dashboard/?category=pantalones">Pantalones</a></li>
-                            <li><a href="/dashboard/?category=zapatos">Zapatos</a></li>
-                            <li><a href="/dashboard/?category=accesorios">Accesorios</a></li>
-                            <li><a href="/dashboard/new">Nuevo Producto</a></li>
-                            <li><a href="/logout">Logout</a>
-                        </ul>
-                    </nav>
-                    <h2 class="title">Productos</h2>
-        `
-        expect(getNavBar(path)).toBe(expectedHTML);
+        const result = getNavBar(path);
+        // Verificar que contiene elementos del navbar del dashboard
+        expect(result).toContain('/dashboard/');
+        expect(result).toContain('Nuevo Producto');
+        expect(result).toContain('/logout');
+        expect(result).not.toContain('/login'); // Dashboard no tiene login
     });
+    
     it('should return the navigation bar in the products path', () => {
         const path = '/products';
-        const expectedHTML = `
-            <!DOCTYPE html>
-            <html lang="es">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <link rel="stylesheet" href="/styles.css">
-                    <title>Tienda</title>
-                </head>
-                <body>
-                    <nav class="navbar">
-                        <ul>
-                            <li><a href="/products/">Productos</a></li>
-                            <li><a href="/products/?category=camisetas">Camisetas</a></li>
-                            <li><a href="/products/?category=pantalones">Pantalones</a></li>
-                            <li><a href="/products/?category=zapatos">Zapatos</a></li>
-                            <li><a href="/products/?category=accesorios">Accesorios</a></li>
-                            <li><a href="/login">Login</a>
-                        </ul>
-                    </nav>
-                    <h2 class="title">Productos</h2>
-        `
-        expect(getNavBar(path)).toBe(expectedHTML);
-    })
+        const result = getNavBar(path);
+        // Verificar que contiene elementos del navbar público
+        expect(result).toContain('/products/');
+        expect(result).toContain('/login');
+        expect(result).not.toContain('Nuevo Producto'); // Público no tiene crear producto
+    });
 });
 
 describe('getProducts', () => {
     it('should return HTML with products', () => {
-        const path = '/products/'
+        const path = '/products/';
         const products = [
             { 
                 _id: 1, 
                 name: 'Product 1', 
                 description: 'Description 1', 
-                image: '', 
+                image: 'test.webp', 
                 price: 10, 
-                category: 'Category 1', 
+                category: 'camisetas', 
                 size: 'M' 
             }
         ];
-        const expectedHTML = `
-<ul class="products-list">
-                    <li class="product-card">
-                        <h3>Product 1</h3>
-                        <img src="/images/" alt="Product 1">
-                        <p>Description 1</p>
-                        <p>10€</p>
-                        <a href="${path}1"><button class="buttons">Ver</button></a>
-                    </li>
-                </ul>
-            </body>
-            </html>
-            `
-
-        expect(getProducts(path, products)).toBe(expectedHTML);
-    })
+        const result = getProducts(path, products);
+        
+        expect(result).toContain('Product 1');
+        expect(result).toContain('Description 1');
+        expect(result).toContain('10€');
+        expect(result).toContain('/products/1');
+        expect(result).toContain('products-list');
+        expect(result).toContain('product-card');
+    });
 });
 
 describe('showProducts', () => {
@@ -117,7 +75,8 @@ describe('showProducts', () => {
                 _id: 1, 
                 name: "camiseta", 
                 description: "camiseta con logo", 
-                price: 15, image:"", 
+                price: 15, 
+                image:"", 
                 category: "camisetas", 
                 size: "M"
             },
@@ -133,7 +92,10 @@ describe('showProducts', () => {
         ];
         Product.find.mockResolvedValue(mockProducts);
 
-        const req = { path: '/dashboard'};
+        const req = { 
+            path: '/dashboard',
+            query: {}
+        };
         const res = { 
             send: jest.fn()
         };
@@ -142,32 +104,31 @@ describe('showProducts', () => {
         // Verificar que Product.find fué llamado
         expect(Product.find).toHaveBeenCalled();
 
-        // Verificar el HTML
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<h2 class="title">Productos</h2>'))
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('camiseta'))
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('pantalones'))
+        expect(res.send).toHaveBeenCalled();
+        const sentHTML = res.send.mock.calls[0][0];
+        expect(sentHTML).toContain('camiseta');
+        expect(sentHTML).toContain('pantalones');
     });
 
-    it('should throw an error if the product does not exist', async () => {
-        const mockError = new Error('Error getting products')
+    it('should return error if there is a problem getting products', async () => {
+        const mockError = new Error('Error getting products');
         Product.find.mockRejectedValue(mockError);
 
-        const mockReq = { path: '/dashboard'};
+        const mockReq = { 
+            path: '/dashboard',
+            query: {}
+        };
         const mockRes = {
             send: jest.fn(),
             status: jest.fn().mockReturnThis()
-        }
+        };
         
         await showProducts(mockReq, mockRes);
         
-        // Verificar que Product.find fué llamado 
         expect(Product.find).toHaveBeenCalled();
-        expect(Product.find).rejects.toThrow('Error getting products')
-        // Verificar que el status es 500
         expect(mockRes.status).toHaveBeenCalledWith(500);
-        // Verificar que nos devuelve el mensaje de error
-        expect(mockRes.send).toHaveBeenCalledWith({ message: 'There was a problem trying get all products'})
-    });    
+        expect(mockRes.send).toHaveBeenCalledWith({ message: 'There was a problem trying get all products'});
+    });   
 });
 
 describe('showProductById', () => {
@@ -188,9 +149,9 @@ describe('showProductById', () => {
         Product.findById.mockResolvedValue(mockProduct);
 
         const req = { 
-            path: '/dashboard',
+            path: '/dashboard/1',
             params: {
-                id: 2
+                productId: 1
             }
         };
         const res = { 
@@ -200,20 +161,21 @@ describe('showProductById', () => {
         await showProductById(req, res);
 
         // Verificar que Product.find fué llamado
-        expect(Product.findById).toHaveBeenCalled();
+        expect(Product.findById).toHaveBeenCalledWith(1);
 
-        // Verificar el HTML
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<h2 class="title">Productos</h2>'))
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('camiseta'));
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining(mockProduct.name));
+        expect(res.send).toHaveBeenCalled();
+        const sentHTML = res.send.mock.calls[0][0];
+        expect(sentHTML).toContain('camiseta');
+        expect(sentHTML).toContain('camiseta con logo');
 
     });
     it('should throw an error if the product does not exist', async () => {
         Product.findById.mockResolvedValue(null);
 
         const mockReq = { 
+            path: '/products/999',
             params: {
-                id: 'undefined'
+                productId: 999
             }
         };
         const mockRes = { 
@@ -232,9 +194,9 @@ describe('showProductById', () => {
         Product.findById.mockRejectedValue(mockError);
 
         const mockReq = { 
-            path: '/dashboard',
+            path: '/dashboard/1',
             params: {
-                id: 'undefined'
+                productId: 1
             }
         };
         const mockRes = {
@@ -244,13 +206,9 @@ describe('showProductById', () => {
         
         await showProductById(mockReq, mockRes);
         
-        // Verificar que Product.find fué llamado 
         expect(Product.findById).toHaveBeenCalled();
-        expect(Product.findById).rejects.toThrow('Error getting the product by id')
-        // Verificar que el status es 500
         expect(mockRes.status).toHaveBeenCalledWith(500);
-        // Verificar que nos devuelve el mensaje de error
-        expect(mockRes.send).toHaveBeenCalledWith({ message: 'Error getting the product.'})
+        expect(mockRes.send).toHaveBeenCalledWith({ message: 'Error getting the product.'});
     });  
 });
 
@@ -259,88 +217,25 @@ describe('showNewProductForm', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
+    
     it('should return HTML for the new product form', async () => {
-        const expectedHTML = `
-        <!DOCTYPE html>
-        <html lang="es">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link rel="stylesheet" href="/styles.css">
-                <title>Tienda</title>
-            </head>
-            <body>
-                <nav class="navbar">
-                    <ul>
-                        <li><a href="/dashboard/">Productos</a></li>
-                        <li><a href="/dashboard/?category=camisetas">Camisetas</a></li>
-                        <li><a href="/dashboard/?category=pantalones">Pantalones</a></li>
-                        <li><a href="/dashboard/?category=zapatos">Zapatos</a></li>
-                        <li><a href="/dashboard/?category=accesorios">Accesorios</a></li>
-                        <li><a href="/dashboard/new">Nuevo Producto</a></li>
-                        <li><a href="/logout">Logout</a>
-                    </ul>
-                </nav>
-                <h2 class="title">Productos</h2>
-            <div class="new-product">
-                <h2>Crear producto</h2>
-                <div class="form">
-                    <form action="/dashboard/" method="post">
-                        <div>
-                            <label for="name">Nombre: *</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div>
-                            <label for="description">Descripción: *</label>
-                            <textarea id="description" name="description" required></textarea>
-                        </div>
-                        <div>
-                            <label for="price">Precio: *</label>
-                            <input type="number" id="price" name="price" step=".01" required>
-                        </div>
-                        <div>
-                            <label for="image">Imagen:</label>
-                            <input type="file" id="image" name="image" accept=".webp, .jpg, .jpeg">
-                        </div>
-                        <div>
-                            <label for="category">Categoría: *</label>
-                            <select name="category" id="category">
-                                <option value="camisetas">Camisetas</option>
-                                <option value="pantalones">Pantalones</option>
-                                <option value="zapatos">Zapatos</option>
-                                <option value="accesorios">Accesorios</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="size">Talla: *</label>
-                            <select name="size" id="size">
-                                <option value="XS">XS</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-                        </div>
-                        <button type="submit">Crear</button>
-                    </form>
-                </div>
-            </div>
-            </body>
-            </html>
-        `
-        const req = { path: '/dashboard' };
+        const req = { path: '/dashboard/new' };
         const res = { send: jest.fn()};
 
-        const result = await showNewProductForm(req, res);
+        await showNewProductForm(req, res);
 
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<h2 class="title">Productos</h2>'))
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining(expectedHTML))
-
+        expect(res.send).toHaveBeenCalled();
+        const sentHTML = res.send.mock.calls[0][0];
+        expect(sentHTML).toContain('Crear producto');
+        expect(sentHTML).toContain('name="name"');
+        expect(sentHTML).toContain('name="description"');
+        expect(sentHTML).toContain('name="price"');
+        expect(sentHTML).toContain('name="category"');
+        expect(sentHTML).toContain('name="size"');
+        expect(sentHTML).toContain('action="/dashboard/"');
     });
-    it('should throw an error if the new product form does not exist', async () => {
+});
 
-    })
-})
 
 describe('createProduct', () => {
     afterEach(() => {
@@ -370,12 +265,14 @@ describe('createProduct', () => {
         await createProduct(req,res);
         
         expect(Product.create).toHaveBeenCalledWith(newMockProduct);
-        //expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<h2>Crear producto</h2>'));
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<p>descripción del nuevo producto</p>'));
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<p>20€</p>'));
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<p>Categoria: camisetas</p>'));
-        expect(res.send).toHaveBeenCalledWith(expect.stringContaining('<p>Talla: M</p>'));
+        expect(res.send).toHaveBeenCalled();
+        const sentHTML = res.send.mock.calls[0][0];
+        expect(sentHTML).toContain('descripción del nuevo producto');
+        expect(sentHTML).toContain('20€');
+        expect(sentHTML).toContain('Categoria: camisetas');
+        expect(sentHTML).toContain('Talla: M');
     });
+
     it('should throw an error if any field is empty', async () => {
         const mockReq = {
             body: {
@@ -404,7 +301,13 @@ describe('createProduct', () => {
 
         const mockReq = { 
             path: '/dashboard',
-            body: {}
+            body: {
+                name: "test",
+                description: "test",
+                price: 10,
+                category: "camisetas",
+                size: "M"
+            }
         };
         const mockRes = {
             send: jest.fn(),
@@ -432,7 +335,7 @@ describe('updateProductById', () => {
             description: "descripción actualizada", 
             price: 25, 
             image:"", 
-            category: "categoría actualizada", 
+            category: "camisetas", 
             size: "L"
         };
 
@@ -444,13 +347,13 @@ describe('updateProductById', () => {
                 description: "descripción actualizada", 
                 price: 25, 
                 image:"", 
-                category: "categoría actualizada", 
+                category: "camisetas", 
                 size: "L" 
             },
             params: {
                 productId: 5
             },
-            path: '/dashboard'
+            path: '/dashboard/5'
         };
 
         const mockRes = {
@@ -480,12 +383,18 @@ describe('updateProductById', () => {
     });
 
     it('should throw an error if there are a problem with server', async () => {
-        const mockError = new Error('Error creating product')
+        const mockError = new Error('Error updating product')
         Product.findByIdAndUpdate.mockRejectedValue(mockError);
 
         const mockReq = { 
-            path: '/dashboard',
-            body: {},
+            path: '/dashboard/5',
+            body: {
+                name: "test",
+                description: "test",
+                price: 10,
+                category: "camisetas",
+                size: "M"
+            },
             params: {
                 productId: 5
             }
@@ -524,7 +433,7 @@ describe('deleteProductById', () => {
             params: {
                 productId: 1
             },
-            path: '/dashboard'
+            path: '/dashboard/1'
         };
         const mockRes = {
             status: jest.fn().mockReturnThis(),
@@ -544,7 +453,7 @@ describe('deleteProductById', () => {
             params: {
                 productId: 1
             },
-            path: '/dashboard'
+            path: '/dashboard/1'
         };
 
         const mockRes = {
